@@ -2,6 +2,7 @@ package com.fullcycle.admin.catalog.domain.application.category.create;
 
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
+import com.fullcycle.admin.catalog.domain.validation.handler.ThrowsValidationHandler;
 
 import java.util.Objects;
 
@@ -18,6 +19,7 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
                 createCategoryCommand.description(),
                 createCategoryCommand.active()
         );
+        category.validate(new ThrowsValidationHandler());
 
         return CreateCategoryOutput.from(this.categoryGateway.create(category));
 

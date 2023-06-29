@@ -1,35 +1,44 @@
 package com.fullcycle.admin.catalog.domain.application.category.create;
 
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
+import com.fullcycle.admin.catalog.domain.exception.DomainException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Objects;
 
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class CreateCategoryUseCaseTest {
 
+    @InjectMocks
+    private DefaultCreateCategoryUseCase useCase;
+
+    @Mock
+    private CategoryGateway categoryGateway;
+
+
     @Test
-    public void givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryId() {
+    public void givenAValidCommand_whenCallsCreateCategory_thenReturnCategoryId() {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
         final var command = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
-        final var categoryGateway = Mockito.mock(CategoryGateway.class);
-        final var usecase = new DefaultCreateCategoryUseCase(categoryGateway);
         when(categoryGateway.create(any())).then(returnsFirstArg());
 
-        final var response = usecase.execute(command);
+        final var response = useCase.execute(command);
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.id());
-        Mockito.verify(categoryGateway, times(1)).create(argThat(category ->
+        verify(categoryGateway, times(1)).create(argThat(category ->
                 Objects.equals(expectedName, category.getName())
                         && Objects.equals(expectedDescription, category.getDescription())
                         && Objects.equals(expectedIsActive, category.isActive())
@@ -38,5 +47,50 @@ public class CreateCategoryUseCaseTest {
                         && Objects.nonNull(category.getUpdatedAt())
                         && Objects.isNull(category.getDeletedAt())
         ));
+    }
+
+    @Test
+    public void givenAnInvalidName_whenCallsCreateCategory_thenReturnDomainException() {
+        final String invalidName = null;
+        final var command = CreateCategoryCommand.with(invalidName, "Description", true);
+        final var expectedErrorMessage = "'name' should not be null";
+
+        final var response = Assertions.assertThrows(DomainException.class, () -> useCase.execute(command));
+
+        Assertions.assertEquals(expectedErrorMessage, response.getMessage());
+        verify(categoryGateway, times(0)).create(any());
+    }
+
+    @Test
+    public void givenAValidCommandWithInactiveCategory_whenCallsCreateCategory_thenReturnInactiveCategoryId() {
+        final boolean expectedActive = false;
+        final var command = CreateCategoryCommand.with("name", "Description", expectedActive);
+
+        when(categoryGateway.create(any())).then(returnsFirstArg());
+
+        final var response = useCase.execute(command);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.id());
+        verify(categoryGateway, times(1)).create(argThat(category ->
+                Objects.equals(expectedActive, category.isActive())
+                        && Objects.nonNull(category.getCreatedAt())
+                        && Objects.nonNull(category.getUpdatedAt())
+                        && Objects.nonNull(category.getDeletedAt())
+        ));
+    }
+
+    @Test
+    public void givenAValidCommand_whenGatewayThrowsRandomException_thenReturnAException() {
+        final var command = CreateCategoryCommand.with("Name", "Description", true);
+        final var expectedErrorMessage = "Gateway error";
+
+        when(categoryGateway.create(any())).thenThrow(new IllegalStateException(expectedErrorMessage));
+
+        final var response = Assertions.assertThrows(IllegalStateException.class, () -> useCase.execute(command));
+
+        Assertions.assertEquals(expectedErrorMessage, response.getMessage());
+        verify(categoryGateway, times(1)).create(any());
+
     }
 }
