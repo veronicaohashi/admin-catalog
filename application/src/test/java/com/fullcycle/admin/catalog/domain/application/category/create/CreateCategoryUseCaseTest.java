@@ -34,7 +34,7 @@ public class CreateCategoryUseCaseTest {
         final var command = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
         when(categoryGateway.create(any())).then(returnsFirstArg());
 
-        final var response = useCase.execute(command);
+        final var response = useCase.execute(command).get();
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.id());
@@ -55,9 +55,9 @@ public class CreateCategoryUseCaseTest {
         final var command = CreateCategoryCommand.with(invalidName, "Description", true);
         final var expectedErrorMessage = "'name' should not be null";
 
-        final var response = Assertions.assertThrows(DomainException.class, () -> useCase.execute(command));
+        final var notification = useCase.execute(command).getLeft();
 
-        Assertions.assertEquals(expectedErrorMessage, response.getMessage());
+        Assertions.assertEquals(expectedErrorMessage, notification.firstError().message());
         verify(categoryGateway, times(0)).create(any());
     }
 
@@ -68,7 +68,7 @@ public class CreateCategoryUseCaseTest {
 
         when(categoryGateway.create(any())).then(returnsFirstArg());
 
-        final var response = useCase.execute(command);
+        final var response = useCase.execute(command).get();
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.id());
@@ -87,9 +87,9 @@ public class CreateCategoryUseCaseTest {
 
         when(categoryGateway.create(any())).thenThrow(new IllegalStateException(expectedErrorMessage));
 
-        final var response = Assertions.assertThrows(IllegalStateException.class, () -> useCase.execute(command));
+        final var response = useCase.execute(command).getLeft();
 
-        Assertions.assertEquals(expectedErrorMessage, response.getMessage());
+        Assertions.assertEquals(expectedErrorMessage, response.firstError().message());
         verify(categoryGateway, times(1)).create(any());
 
     }
