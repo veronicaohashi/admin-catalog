@@ -62,7 +62,7 @@ public class CreateCategoryUseCaseTest {
     }
 
     @Test
-    public void givenAValidCommandWithInactiveCategory_whenCallsCreateCategory_thenReturnInactiveCategoryId() {
+    public void givenAValidInactivateCommand_whenCallsCreateCategory_shouldReturnInactiveCategoryId() {
         final boolean expectedActive = false;
         final var command = CreateCategoryCommand.with("name", "Description", expectedActive);
 
