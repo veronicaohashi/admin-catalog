@@ -6,10 +6,12 @@ import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exception.DomainException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Objects;
@@ -27,6 +29,11 @@ public class UpdateCategoryUseCaseTest {
 
     @Mock
     private CategoryGateway categoryGateway;
+
+    @BeforeEach
+    void cleanUp() {
+        Mockito.reset(categoryGateway);
+    }
 
     @Test
     public void givenAValidCommand_whenCallsUpdateCategory_shouldReturnCategoryId() {
@@ -118,7 +125,6 @@ public class UpdateCategoryUseCaseTest {
 
     @Test
     public void givenACommandWithInvalidID_whenCallsUpdateCategory_shouldReturnNotFoundException() {
-        final var category = Category.newCategory("Film", "Description", true);
         final var expectedId = "123";
         final var command = UpdateCategoryCommand.with(expectedId, "Film", "Description", true);
         final var expectedErrorMessage = "Category with ID 123 was not found";
