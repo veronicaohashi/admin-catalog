@@ -38,7 +38,7 @@ public class UpdateCategoryUseCaseTest {
         final var command = UpdateCategoryCommand.with(expectedId.getValue(), expectedName, expectedDescription, expectedIsActive);
 
         when(categoryGateway.findById(eq(expectedId)))
-                .thenReturn(Optional.of(createdCategory));
+                .thenReturn(Optional.of(Category.with(createdCategory)));
 
         when(categoryGateway.update(any()))
                 .thenAnswer(returnsFirstArg());
@@ -53,7 +53,7 @@ public class UpdateCategoryUseCaseTest {
                         && Objects.equals(expectedIsActive, category.isActive())
                         && Objects.equals(expectedId, category.getId())
                         && Objects.equals(createdCategory.getCreatedAt(), category.getCreatedAt())
-                        && Objects.equals(createdCategory.getUpdatedAt(), category.getUpdatedAt()) // TODO: Fix assertion
+                        && createdCategory.getUpdatedAt().isBefore(category.getUpdatedAt())
                         && Objects.isNull(category.getDeletedAt())
         ));
     }
