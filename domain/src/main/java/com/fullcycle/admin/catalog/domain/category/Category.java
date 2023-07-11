@@ -14,13 +14,13 @@ public class Category extends AggregateRoot<CategoryID> {
     private Instant deletedAt;
 
     private Category(
-        CategoryID id,
-        String name,
-        String description,
-        boolean active,
-        Instant createdAt,
-        Instant updatedAt,
-        Instant deletedAt
+            CategoryID id,
+            String name,
+            String description,
+            boolean active,
+            Instant createdAt,
+            Instant updatedAt,
+            Instant deletedAt
     ) {
         super(id);
         this.name = name;
@@ -39,7 +39,7 @@ public class Category extends AggregateRoot<CategoryID> {
     }
 
     public static Category with(final Category category) {
-        return new Category(
+        return Category.with(
                 category.id,
                 category.name,
                 category.description,
@@ -47,6 +47,26 @@ public class Category extends AggregateRoot<CategoryID> {
                 category.createdAt,
                 category.updatedAt,
                 category.deletedAt
+        );
+    }
+
+    public static Category with(
+            final CategoryID id,
+            final String name,
+            final String description,
+            final boolean active,
+            final Instant createdAt,
+            final Instant updatedAt,
+            final Instant deletedAt
+    ) {
+        return new Category(
+                id,
+                name,
+                description,
+                active,
+                createdAt,
+                updatedAt,
+                deletedAt
         );
     }
 
@@ -73,11 +93,11 @@ public class Category extends AggregateRoot<CategoryID> {
     }
 
     public Category update(
-        final String name,
-        final String description,
-        final boolean active
+            final String name,
+            final String description,
+            final boolean active
     ) {
-        if(active) {
+        if (active) {
             activate();
         } else {
             deactivate();
