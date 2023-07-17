@@ -1,9 +1,8 @@
 package com.fullcycle.admin.catalog.infraestructure.category;
 
 import com.fullcycle.admin.catalog.domain.category.Category;
-import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.infraestructure.MySQLGatewayTest;
-import com.fullcycle.admin.catalog.infraestructure.category.persistance.CategoryRepository;
+import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

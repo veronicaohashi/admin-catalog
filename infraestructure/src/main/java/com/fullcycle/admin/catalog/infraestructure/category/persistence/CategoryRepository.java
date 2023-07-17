@@ -1,4 +1,4 @@
-package com.fullcycle.admin.catalog.infraestructure.category.persistance;
+package com.fullcycle.admin.catalog.infraestructure.category.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
