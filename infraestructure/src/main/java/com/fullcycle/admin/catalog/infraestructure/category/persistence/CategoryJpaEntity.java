@@ -20,6 +20,7 @@ public class CategoryJpaEntity {
 
     @Column(name = "description", length = 4000)
     private String description;
+
     @Column(name = "active", nullable = false)
     private boolean active;
 
