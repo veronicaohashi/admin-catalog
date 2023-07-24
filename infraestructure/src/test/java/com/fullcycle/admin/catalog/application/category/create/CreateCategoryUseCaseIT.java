@@ -1,4 +1,4 @@
-package com.fullcycle.admin.catalog.application.create;
+package com.fullcycle.admin.catalog.application.category.create;
 
 import com.fullcycle.admin.catalog.IntegrationTest;
 import com.fullcycle.admin.catalog.domain.application.category.create.CreateCategoryCommand;
