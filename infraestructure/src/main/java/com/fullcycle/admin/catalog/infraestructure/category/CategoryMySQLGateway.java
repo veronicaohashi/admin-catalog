@@ -22,6 +22,10 @@ public class CategoryMySQLGateway implements CategoryGateway {
 
     @Override
     public Category create(Category category) {
+        return save(category);
+    }
+
+    private Category save(final Category category) {
         return repository.save(CategoryJpaEntity.from(category))
                 .toAggregate();
     }
@@ -37,8 +41,8 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public Category update(Category category) {
-        return null;
+    public Category update(final Category category) {
+        return save(category);
     }
 
     @Override

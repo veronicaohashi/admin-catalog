@@ -2,6 +2,7 @@ package com.fullcycle.admin.catalog.infraestructure.category;
 
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.infraestructure.MySQLGatewayTest;
+import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,39 @@ public class CategoryMySQLGatewayTest {
         Assertions.assertEquals(category.getCreatedAt(), persistedEntity.getCreatedAt());
         Assertions.assertEquals(category.getUpdatedAt(), persistedEntity.getUpdatedAt());
         Assertions.assertEquals(category.getDeletedAt(), persistedEntity.getDeletedAt());
+    }
 
+    @Test
+    public void givenAValidCategory_whenCallsUpdate_thenReturnACategoryUpdated() {
+        final var expectedName = "Filme";
+        final var expectedDescription = "Um filme";
+        final var expectedIsActive = true;
+        final var category = Category.newCategory("", null, false);
 
+        Assertions.assertEquals(0, categoryRepository.count());
+        categoryRepository.saveAndFlush(CategoryJpaEntity.from(category));
+
+        category.update(expectedName, expectedDescription, expectedIsActive);
+
+        final var response = categoryGateway.update(category);
+
+        Assertions.assertEquals(1, categoryRepository.count());
+        Assertions.assertEquals(category.getId(), response.getId());
+        Assertions.assertEquals(expectedName, response.getName());
+        Assertions.assertEquals(expectedDescription, response.getDescription());
+        Assertions.assertEquals(expectedIsActive, response.isActive());
+        Assertions.assertEquals(category.getCreatedAt(), response.getCreatedAt());
+        Assertions.assertEquals(category.getUpdatedAt(), response.getUpdatedAt());
+        Assertions.assertEquals(category.getDeletedAt(), response.getDeletedAt());
+
+        final var persistedEntity = categoryRepository.findById(category.getId().getValue()).get();
+
+        Assertions.assertEquals(category.getId().getValue(), persistedEntity.getId());
+        Assertions.assertEquals(expectedName, persistedEntity.getName());
+        Assertions.assertEquals(expectedDescription, persistedEntity.getDescription());
+        Assertions.assertEquals(expectedIsActive, persistedEntity.isActive());
+        Assertions.assertEquals(category.getCreatedAt(), persistedEntity.getCreatedAt());
+        Assertions.assertEquals(category.getUpdatedAt(), persistedEntity.getUpdatedAt());
+        Assertions.assertEquals(category.getDeletedAt(), persistedEntity.getDeletedAt());
     }
 }
