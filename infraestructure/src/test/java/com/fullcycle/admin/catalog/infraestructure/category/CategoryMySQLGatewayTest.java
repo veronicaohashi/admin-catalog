@@ -98,4 +98,27 @@ public class CategoryMySQLGatewayTest {
 
         Assertions.assertEquals(0, categoryRepository.count());
     }
+
+    @Test
+    public void givenAPrePersistedCategoryAndValidCategoryId_whenCallsFindById_thenReturnCategory() {
+        final var category = Category.newCategory("Filme", "O filme mais assistido", true);
+        categoryRepository.saveAndFlush(CategoryJpaEntity.from(category));
+
+        final var response = categoryGateway.findById(category.getId()).get();
+
+        Assertions.assertEquals(category.getId(), response.getId());
+        Assertions.assertEquals(category.getName(), response.getName());
+        Assertions.assertEquals(category.getDescription(), response.getDescription());
+        Assertions.assertEquals(category.isActive(), response.isActive());
+        Assertions.assertEquals(category.getCreatedAt(), response.getCreatedAt());
+        Assertions.assertEquals(category.getUpdatedAt(), response.getUpdatedAt());
+        Assertions.assertEquals(category.getDeletedAt(), response.getDeletedAt());
+    }
+
+    @Test
+    public void givenValidCategoryIdNotStored_whenCallsFindById_thenReturnEmpty() {
+        final var response = categoryGateway.findById(CategoryID.from("empty"));
+
+        Assertions.assertTrue(response.isEmpty());
+    }
 }

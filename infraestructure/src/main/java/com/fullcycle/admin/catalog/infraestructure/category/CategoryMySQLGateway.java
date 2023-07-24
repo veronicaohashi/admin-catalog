@@ -40,7 +40,7 @@ public class CategoryMySQLGateway implements CategoryGateway {
 
     @Override
     public Optional<Category> findById(CategoryID id) {
-        return Optional.empty();
+        return repository.findById(id.getValue()).map(CategoryJpaEntity::toAggregate);
     }
 
     @Override
