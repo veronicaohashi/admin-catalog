@@ -97,6 +97,5 @@ public class CreateCategoryUseCaseTest {
 
         Assertions.assertEquals(expectedErrorMessage, response.firstError().message());
         verify(categoryGateway, times(1)).create(any());
-
     }
 }
