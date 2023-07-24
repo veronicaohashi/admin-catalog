@@ -7,9 +7,15 @@ import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+
+import static com.fullcycle.admin.catalog.infraestructure.utils.SpecificationUtils.like;
 
 @Component
 public class CategoryMySQLGateway implements CategoryGateway {
@@ -21,7 +27,7 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public Category create(Category category) {
+    public Category create(final Category category) {
         return save(category);
     }
 
@@ -31,7 +37,7 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public void deleteById(CategoryID id) {
+    public void deleteById(final CategoryID id) {
         final var idValue = id.getValue();
         if(repository.existsById(idValue)) {
             repository.deleteById(idValue);
@@ -39,7 +45,7 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public Optional<Category> findById(CategoryID id) {
+    public Optional<Category> findById(final CategoryID id) {
         return repository.findById(id.getValue()).map(CategoryJpaEntity::toAggregate);
     }
 
@@ -49,7 +55,29 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public Pagination<Category> findAll(CategorySearchQuery aQuery) {
-        return null;
+    public Pagination<Category> findAll(final CategorySearchQuery query) {
+        final var page = PageRequest.of(
+                query.page(),
+                query.perPage(),
+                Sort.by(Direction.fromString(query.direction()), query.sort())
+        );
+
+        final var specification = Optional.ofNullable(query.terms())
+                .filter(str -> !str.isBlank())
+                .map(str -> {
+                    final Specification<CategoryJpaEntity> nameLike = like("name", str);
+                    final Specification<CategoryJpaEntity> descriptionLike = like("description", str);
+                    return nameLike.or(descriptionLike);
+                })
+                .orElse(null);
+
+        var pageResult = repository.findAll(Specification.where(specification), page);
+
+        return new Pagination<>(
+                pageResult.getNumber(),
+                pageResult.getSize(),
+                pageResult.getTotalElements(),
+                pageResult.map(CategoryJpaEntity::toAggregate).toList()
+        );
     }
 }
