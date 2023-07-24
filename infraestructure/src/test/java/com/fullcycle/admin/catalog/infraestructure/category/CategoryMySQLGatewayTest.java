@@ -58,18 +58,18 @@ public class CategoryMySQLGatewayTest {
         Assertions.assertEquals(0, categoryRepository.count());
         categoryRepository.saveAndFlush(CategoryJpaEntity.from(category));
 
-        category.update(expectedName, expectedDescription, expectedIsActive);
+        final var updatedCategory = category.clone().update(expectedName, expectedDescription, expectedIsActive);
 
-        final var response = categoryGateway.update(category);
+        final var response = categoryGateway.update(updatedCategory);
 
         Assertions.assertEquals(1, categoryRepository.count());
         Assertions.assertEquals(category.getId(), response.getId());
         Assertions.assertEquals(expectedName, response.getName());
         Assertions.assertEquals(expectedDescription, response.getDescription());
         Assertions.assertEquals(expectedIsActive, response.isActive());
+        Assertions.assertTrue(category.getUpdatedAt().isBefore(response.getUpdatedAt()));
         Assertions.assertEquals(category.getCreatedAt(), response.getCreatedAt());
-        Assertions.assertEquals(category.getUpdatedAt(), response.getUpdatedAt());
-        Assertions.assertEquals(category.getDeletedAt(), response.getDeletedAt());
+        Assertions.assertNull(response.getDeletedAt());
 
         final var persistedEntity = categoryRepository.findById(category.getId().getValue()).get();
 
@@ -77,9 +77,9 @@ public class CategoryMySQLGatewayTest {
         Assertions.assertEquals(expectedName, persistedEntity.getName());
         Assertions.assertEquals(expectedDescription, persistedEntity.getDescription());
         Assertions.assertEquals(expectedIsActive, persistedEntity.isActive());
-        Assertions.assertEquals(category.getCreatedAt(), persistedEntity.getCreatedAt());
-        Assertions.assertEquals(category.getUpdatedAt(), persistedEntity.getUpdatedAt());
-        Assertions.assertEquals(category.getDeletedAt(), persistedEntity.getDeletedAt());
+        Assertions.assertTrue(category.getUpdatedAt().isBefore(persistedEntity.getUpdatedAt()));
+        Assertions.assertEquals(category.getCreatedAt(), response.getCreatedAt());
+        Assertions.assertNull(response.getDeletedAt());
     }
 
     @Test
