@@ -36,7 +36,7 @@ public class CreateCategoryUseCaseIT {
 
         Assertions.assertEquals(1, repository.count());
 
-        final var createdCategory = repository.findById(response.id().getValue()).get();
+        final var createdCategory = repository.findById(response.id()).get();
         Assertions.assertEquals(expectedName, createdCategory.getName());
         Assertions.assertEquals(expectedDescription, createdCategory.getDescription());
         Assertions.assertEquals(expectedIsActive, createdCategory.isActive());

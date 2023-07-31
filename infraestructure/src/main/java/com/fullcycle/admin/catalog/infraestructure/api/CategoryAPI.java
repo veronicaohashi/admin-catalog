@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalog.infraestructure.api;
 
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
+import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategoryApiInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,7 +24,7 @@ public interface CategoryAPI {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<?> create();
+    ResponseEntity<?> create(@RequestBody CreateCategoryApiInput input);
 
     @GetMapping
     @Operation(summary = "List all categories paginated")
