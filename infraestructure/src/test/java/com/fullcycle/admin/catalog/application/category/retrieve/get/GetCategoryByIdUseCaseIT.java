@@ -6,6 +6,7 @@ import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exception.DomainException;
+import com.fullcycle.admin.catalog.domain.exception.NotFoundException;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
@@ -17,7 +18,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 
 @IntegrationTest
-public class GetCategoryByIdUseCaseIT {
+class GetCategoryByIdUseCaseIT {
 
     @Autowired
     private GetCategoryByIdUseCase useCase;
@@ -29,7 +30,7 @@ public class GetCategoryByIdUseCaseIT {
     private CategoryGateway categoryGateway;
 
     @Test
-    public void givenAValidId_whenCallsGetCategory_thenReturnCategory() {
+    void givenAValidId_whenCallsGetCategory_thenReturnCategory() {
         final var expectedCategory = Category.newCategory("Film", "Description", true);
         final var expectedId = expectedCategory.getId();
         repository.saveAndFlush(CategoryJpaEntity.from(expectedCategory));
@@ -43,17 +44,20 @@ public class GetCategoryByIdUseCaseIT {
     }
 
     @Test
-    public void givenAInvalidId_whenCallsGetCategory_thenReturnNotFound() {
+    void givenAInvalidId_whenCallsGetCategory_thenReturnNotFound() {
         final var expectedMessage = "Category with ID 123 was not found";
         final var invalidId = CategoryID.from("123");
 
-        final var response = Assertions.assertThrows(DomainException.class, () -> useCase.execute(invalidId.getValue()));
+        final var response = Assertions.assertThrows(
+                NotFoundException.class,
+                () -> useCase.execute(invalidId.getValue())
+        );
 
         Assertions.assertEquals(expectedMessage, response.getMessage());
     }
 
     @Test
-    public void givenAValidId_whenGatewayThrowsException_thenReturnException() {
+    void givenAValidId_whenGatewayThrowsException_thenReturnException() {
         final var expectedMessage = "Gateway error";
         final var invalidId = CategoryID.from("123");
         doThrow(new IllegalStateException(expectedMessage)).when(categoryGateway).findById(eq(invalidId));

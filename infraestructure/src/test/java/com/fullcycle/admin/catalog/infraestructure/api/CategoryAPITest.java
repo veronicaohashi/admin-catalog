@@ -9,6 +9,7 @@ import com.fullcycle.admin.catalog.domain.application.category.retrieve.get.GetC
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exception.DomainException;
+import com.fullcycle.admin.catalog.domain.exception.NotFoundException;
 import com.fullcycle.admin.catalog.domain.validation.Error;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategoryApiInput;
@@ -164,12 +165,12 @@ public class CategoryAPITest {
     @Test
     void givenAInvalidId_whenCallsGetCategory_thnReturnNotFound() throws Exception {
         final var expectedErrorMessage = "Category with ID 123 was not found";
-        final var expectedId = CategoryID.from("123").getValue();
+        final var expectedId = CategoryID.from("123");
 
         when(getCategoryByIdUseCase.execute(any()))
-                .thenThrow(DomainException.with(new Error(expectedErrorMessage)));
+                .thenThrow(NotFoundException.with(Category.class, expectedId));
 
-        final var request = get("/categories/{id}", expectedId)
+        final var request = get("/categories/{id}", expectedId.getValue())
                 .contentType(MediaType.APPLICATION_JSON);
         mvc.perform(request)
                 .andDo(print())
