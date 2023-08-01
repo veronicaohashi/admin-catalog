@@ -4,6 +4,7 @@ import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exception.DomainException;
+import com.fullcycle.admin.catalog.domain.exception.NotFoundException;
 import com.fullcycle.admin.catalog.domain.validation.Error;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import io.vavr.control.Either;
@@ -35,10 +36,8 @@ public class DefaultUpdateCategoryUseCase extends UpdateCategoryUseCase {
         return notification.hasError() ? Left(notification) : update(category);
     }
 
-    private static Supplier<DomainException> notFound(CategoryID id) {
-        return () -> DomainException.with(
-                new Error("Category with ID %s was not found".formatted(id.getValue()))
-        );
+    private static Supplier<NotFoundException> notFound(CategoryID id) {
+        return () -> NotFoundException.with(Category.class, id);
     }
 
     private Either<Notification, UpdateCategoryOutput> update(final Category category) {

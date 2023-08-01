@@ -6,6 +6,7 @@ import com.fullcycle.admin.catalog.domain.application.category.update.UpdateCate
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.exception.DomainException;
+import com.fullcycle.admin.catalog.domain.exception.NotFoundException;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
@@ -17,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @IntegrationTest
-public class UpdateCategoryUseCaseIT {
+class UpdateCategoryUseCaseIT {
     @Autowired
     private UpdateCategoryUseCase useCase;
 
@@ -28,7 +29,7 @@ public class UpdateCategoryUseCaseIT {
     private CategoryGateway categoryGateway;
 
     @Test
-    public void givenAValidCommand_whenCallsUpdateCategory_shouldReturnCategoryId() {
+    void givenAValidCommand_whenCallsUpdateCategory_shouldReturnCategoryId() {
         final var category = Category.newCategory("", null, true);
         repository.saveAndFlush(CategoryJpaEntity.from(category));
 
@@ -40,7 +41,7 @@ public class UpdateCategoryUseCaseIT {
 
         final var response = useCase.execute(command).get();
         Assertions.assertNotNull(response);
-        Assertions.assertEquals(expectedId, response.id());
+        Assertions.assertEquals(expectedId.getValue(), response.id());
 
         final var categoryFromDB = repository.findById(expectedId.getValue()).get();
         Assertions.assertEquals(expectedName, categoryFromDB.getName());
@@ -51,7 +52,7 @@ public class UpdateCategoryUseCaseIT {
     }
 
     @Test
-    public void givenAnInvalidName_whenCallsUpdateCategory_thenReturnDomainException() {
+    void givenAnInvalidName_whenCallsUpdateCategory_thenReturnDomainException() {
         final var category = Category.newCategory("Film", "Description", true);
         repository.saveAndFlush(CategoryJpaEntity.from(category));
 
@@ -67,7 +68,7 @@ public class UpdateCategoryUseCaseIT {
     }
 
     @Test
-    public void givenAValidInactivateCommand_whenCallsUpdateCategory_shouldReturnInactiveCategoryId() {
+    void givenAValidInactivateCommand_whenCallsUpdateCategory_shouldReturnInactiveCategoryId() {
         final var category = Category.newCategory("Film", "Description", true);
         repository.saveAndFlush(CategoryJpaEntity.from(category));
 
@@ -83,7 +84,7 @@ public class UpdateCategoryUseCaseIT {
     }
 
     @Test
-    public void givenAValidCommand_whenGatewayThrowsRandomException_shouldReturnAException() {
+    void givenAValidCommand_whenGatewayThrowsRandomException_shouldReturnAException() {
         final var category = Category.newCategory("Film", "Description", true);
         repository.saveAndFlush(CategoryJpaEntity.from(category));
 
@@ -100,14 +101,14 @@ public class UpdateCategoryUseCaseIT {
     }
 
     @Test
-    public void givenACommandWithInvalidID_whenCallsUpdateCategory_shouldReturnNotFoundException() {
+    void givenACommandWithInvalidID_whenCallsUpdateCategory_shouldReturnNotFoundException() {
         final var expectedId = "123";
         final var command = UpdateCategoryCommand.with(expectedId, "Film", "Description", true);
         final var expectedErrorMessage = "Category with ID 123 was not found";
 
-        final var notification = Assertions.assertThrows(DomainException.class, () -> useCase.execute(command));
+        final var notification = Assertions.assertThrows(NotFoundException.class, () -> useCase.execute(command));
 
-        Assertions.assertEquals(expectedErrorMessage, notification.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorMessage, notification.getMessage());
         verify(categoryGateway, times(1)).findById(any());
         verify(categoryGateway, times(0)).update(any());
     }

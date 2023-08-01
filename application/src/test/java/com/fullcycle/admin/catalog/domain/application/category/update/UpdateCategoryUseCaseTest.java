@@ -5,6 +5,8 @@ import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exception.DomainException;
+import com.fullcycle.admin.catalog.domain.exception.NotFoundException;
+import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UpdateCategoryUseCaseTest {
+class UpdateCategoryUseCaseTest {
 
     @InjectMocks
     private DefaultUpdateCategoryUseCase useCase;
@@ -36,7 +38,7 @@ public class UpdateCategoryUseCaseTest {
     }
 
     @Test
-    public void givenAValidCommand_whenCallsUpdateCategory_shouldReturnCategoryId() {
+    void givenAValidCommand_whenCallsUpdateCategory_shouldReturnCategoryId() {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -67,7 +69,7 @@ public class UpdateCategoryUseCaseTest {
     }
 
     @Test
-    public void givenAnInvalidName_whenCallsUpdateCategory_thenReturnDomainException() {
+    void givenAnInvalidName_whenCallsUpdateCategory_thenReturnDomainException() {
         final String invalidName = null;
         final var category = Category.newCategory("Film", "Description", true);
         final var expectedId = category.getId();
@@ -82,7 +84,7 @@ public class UpdateCategoryUseCaseTest {
     }
 
     @Test
-    public void givenAValidInactivateCommand_whenCallsUpdateCategory_shouldReturnInactiveCategoryId() {
+    void givenAValidInactivateCommand_whenCallsUpdateCategory_shouldReturnInactiveCategoryId() {
         final boolean expectedActive = false;
         final var category = Category.newCategory("Film", "Description", true);
         final var expectedId = category.getId();
@@ -107,7 +109,7 @@ public class UpdateCategoryUseCaseTest {
     }
 
     @Test
-    public void givenAValidCommand_whenGatewayThrowsRandomException_shouldReturnAException() {
+    void givenAValidCommand_whenGatewayThrowsRandomException_shouldReturnAException() {
         final var category = Category.newCategory("Film", "Description", true);
         final var command = UpdateCategoryCommand.with(category.getId().getValue(), "Film", "Description", true);
         final var expectedErrorMessage = "Gateway error";
@@ -124,16 +126,16 @@ public class UpdateCategoryUseCaseTest {
     }
 
     @Test
-    public void givenACommandWithInvalidID_whenCallsUpdateCategory_shouldReturnNotFoundException() {
+    void givenACommandWithInvalidID_whenCallsUpdateCategory_shouldReturnNotFoundException() {
         final var expectedId = "123";
         final var command = UpdateCategoryCommand.with(expectedId, "Film", "Description", true);
         final var expectedErrorMessage = "Category with ID 123 was not found";
         when(categoryGateway.findById(eq(CategoryID.from(command.id()))))
                 .thenReturn(Optional.empty());
 
-        final var notification = Assertions.assertThrows(DomainException.class, () -> useCase.execute(command));
+        final var notification = Assertions.assertThrows(NotFoundException.class, () -> useCase.execute(command));
 
-        Assertions.assertEquals(expectedErrorMessage, notification.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorMessage, notification.getMessage());
         verify(categoryGateway, times(1)).findById(any());
         verify(categoryGateway, times(0)).update(any());
     }
