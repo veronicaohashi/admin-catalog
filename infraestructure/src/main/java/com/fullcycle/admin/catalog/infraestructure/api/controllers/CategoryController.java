@@ -3,6 +3,7 @@ package com.fullcycle.admin.catalog.infraestructure.api.controllers;
 import com.fullcycle.admin.catalog.domain.application.category.create.CreateCategoryCommand;
 import com.fullcycle.admin.catalog.domain.application.category.create.CreateCategoryOutput;
 import com.fullcycle.admin.catalog.domain.application.category.create.CreateCategoryUseCase;
+import com.fullcycle.admin.catalog.domain.application.category.delete.DeleteCategoryUseCase;
 import com.fullcycle.admin.catalog.domain.application.category.retrieve.get.GetCategoryByIdUseCase;
 import com.fullcycle.admin.catalog.domain.application.category.update.UpdateCategoryCommand;
 import com.fullcycle.admin.catalog.domain.application.category.update.UpdateCategoryOutput;
@@ -29,14 +30,18 @@ public class CategoryController implements CategoryAPI {
 
     private final UpdateCategoryUseCase updateCategoryUseCase;
 
+    private final DeleteCategoryUseCase deleteCategoryUseCase;
+
     public CategoryController(
             final CreateCategoryUseCase createCategoryUseCase,
             final GetCategoryByIdUseCase getCategoryByIdUseCase,
-            final UpdateCategoryUseCase updateCategoryUseCase
+            final UpdateCategoryUseCase updateCategoryUseCase,
+            final DeleteCategoryUseCase deleteCategoryUseCase
     ) {
         this.createCategoryUseCase = Objects.requireNonNull(createCategoryUseCase);
         this.getCategoryByIdUseCase = Objects.requireNonNull(getCategoryByIdUseCase);
         this.updateCategoryUseCase = Objects.requireNonNull(updateCategoryUseCase);
+        this.deleteCategoryUseCase = Objects.requireNonNull(deleteCategoryUseCase);
     }
 
     @Override
@@ -81,5 +86,10 @@ public class CategoryController implements CategoryAPI {
         final Function<UpdateCategoryOutput, ResponseEntity<?>> onSuccess = ResponseEntity::ok;
 
         return updateCategoryUseCase.execute(command).fold(onError, onSuccess);
+    }
+
+    @Override
+    public void delete(final String id) {
+        deleteCategoryUseCase.execute(id);
     }
 }
