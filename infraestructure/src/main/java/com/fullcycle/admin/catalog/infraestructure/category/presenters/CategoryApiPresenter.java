@@ -2,13 +2,13 @@ package com.fullcycle.admin.catalog.infraestructure.category.presenters;
 
 import com.fullcycle.admin.catalog.domain.application.category.retrieve.get.CategoryOutput;
 import com.fullcycle.admin.catalog.domain.application.category.retrieve.list.CategoryListOutput;
-import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryApiOutput;
+import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryResponse;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryListResponse;
 
 public interface CategoryApiPresenter {
 
-    static CategoryApiOutput present(final CategoryOutput output) {
-        return new CategoryApiOutput(
+    static CategoryResponse present(final CategoryOutput output) {
+        return new CategoryResponse(
                 output.id().getValue(),
                 output.name(),
                 output.description(),

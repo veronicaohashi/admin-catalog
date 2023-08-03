@@ -9,7 +9,6 @@ import com.fullcycle.admin.catalog.domain.application.category.retrieve.get.Cate
 import com.fullcycle.admin.catalog.domain.application.category.retrieve.get.GetCategoryByIdUseCase;
 import com.fullcycle.admin.catalog.domain.application.category.retrieve.list.CategoryListOutput;
 import com.fullcycle.admin.catalog.domain.application.category.retrieve.list.ListCategoriesUseCase;
-import com.fullcycle.admin.catalog.domain.application.category.update.UpdateCategoryCommand;
 import com.fullcycle.admin.catalog.domain.application.category.update.UpdateCategoryOutput;
 import com.fullcycle.admin.catalog.domain.application.category.update.UpdateCategoryUseCase;
 import com.fullcycle.admin.catalog.domain.category.Category;
@@ -19,15 +18,13 @@ import com.fullcycle.admin.catalog.domain.exception.NotFoundException;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.validation.Error;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
-import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategoryApiInput;
-import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategoryApiInput;
-import org.hibernate.sql.Update;
+import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategoryRequest;
+import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategoryRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 import java.util.Objects;
@@ -70,7 +67,7 @@ public class CategoryAPITest {
         var expectedName = "Filmes";
         var expectedDescription = "A categoria mais assistida";
         var expectedIsActive = true;
-        final var input = new CreateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+        final var input = new CreateCategoryRequest(expectedName, expectedDescription, expectedIsActive);
 
         when(createCategoryUseCase.execute(any()))
                 .thenReturn(Right(CreateCategoryOutput.from("123")));
@@ -98,7 +95,7 @@ public class CategoryAPITest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
         final var expectedMessage = "'name' should not be null";
-        final var input = new CreateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+        final var input = new CreateCategoryRequest(expectedName, expectedDescription, expectedIsActive);
 
         when(createCategoryUseCase.execute(any()))
                 .thenReturn(Left(Notification.create(new Error(expectedMessage))));
@@ -127,7 +124,7 @@ public class CategoryAPITest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
         final var expectedMessage = "'name' should not be null";
-        final var input = new CreateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+        final var input = new CreateCategoryRequest(expectedName, expectedDescription, expectedIsActive);
 
         when(createCategoryUseCase.execute(any()))
                 .thenThrow(DomainException.with(new Error(expectedMessage)));
@@ -202,7 +199,7 @@ public class CategoryAPITest {
         var expectedName = "Filmes";
         var expectedDescription = "A categoria mais assistida";
         var expectedIsActive = true;
-        final var input = new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+        final var input = new UpdateCategoryRequest(expectedName, expectedDescription, expectedIsActive);
         when(updateCategoryUseCase.execute(any()))
                 .thenReturn(Right(UpdateCategoryOutput.from(expectedId)));
 
@@ -229,7 +226,7 @@ public class CategoryAPITest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
         final var expectedMessage = "'name' should not be null";
-        final var input = new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+        final var input = new UpdateCategoryRequest(expectedName, expectedDescription, expectedIsActive);
 
         when(updateCategoryUseCase.execute(any()))
                 .thenThrow(DomainException.with(new Error(expectedMessage)));
@@ -258,7 +255,7 @@ public class CategoryAPITest {
         var expectedName = "Filmes";
         var expectedDescription = "A categoria mais assistida";
         var expectedIsActive = true;
-        final var input = new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+        final var input = new UpdateCategoryRequest(expectedName, expectedDescription, expectedIsActive);
 
         when(updateCategoryUseCase.execute(any()))
                 .thenThrow(NotFoundException.with(Category.class, expectedId));

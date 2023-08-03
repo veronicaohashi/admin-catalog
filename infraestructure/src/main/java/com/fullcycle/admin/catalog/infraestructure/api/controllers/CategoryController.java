@@ -13,10 +13,10 @@ import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import com.fullcycle.admin.catalog.infraestructure.api.CategoryAPI;
-import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryApiOutput;
+import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryResponse;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryListResponse;
-import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategoryApiInput;
-import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategoryApiInput;
+import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategoryRequest;
+import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategoryRequest;
 import com.fullcycle.admin.catalog.infraestructure.category.presenters.CategoryApiPresenter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,7 +52,7 @@ public class CategoryController implements CategoryAPI {
     }
 
     @Override
-    public ResponseEntity<?> create(final CreateCategoryApiInput input) {
+    public ResponseEntity<?> create(final CreateCategoryRequest input) {
         final var command = CreateCategoryCommand.with(
                 input.name(),
                 input.description(),
@@ -84,12 +84,12 @@ public class CategoryController implements CategoryAPI {
     }
 
     @Override
-    public CategoryApiOutput getById(final String id) {
+    public CategoryResponse getById(final String id) {
         return CategoryApiPresenter.present(getCategoryByIdUseCase.execute(id));
     }
 
     @Override
-    public ResponseEntity<?> update(String id, UpdateCategoryApiInput input) {
+    public ResponseEntity<?> update(String id, UpdateCategoryRequest input) {
         final var command = UpdateCategoryCommand.with(
                 id,
                 input.name(),
