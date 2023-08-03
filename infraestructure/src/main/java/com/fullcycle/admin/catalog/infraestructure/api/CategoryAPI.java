@@ -2,6 +2,7 @@ package com.fullcycle.admin.catalog.infraestructure.api;
 
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryApiOutput;
+import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryListResponse;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategoryApiInput;
 import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategoryApiInput;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +37,7 @@ public interface CategoryAPI {
             @ApiResponse(responseCode = "422", description = "A invalid parameter was received"),
             @ApiResponse(responseCode = "500", description = "An internal server error was thrown"),
     })
-    Pagination<?> list(
+    Pagination<CategoryListResponse> list(
             @RequestParam(name = "search", required = false, defaultValue = "") final String search,
             @RequestParam(name = "page", required = false, defaultValue = "0") final int page,
             @RequestParam(name = "perPage", required = false, defaultValue = "10") final int perPage,

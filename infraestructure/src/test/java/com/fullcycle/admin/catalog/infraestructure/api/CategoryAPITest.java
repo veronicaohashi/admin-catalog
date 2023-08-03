@@ -319,7 +319,6 @@ public class CategoryAPITest {
                 .andExpect(jsonPath("$.items[0].description", equalTo(category.getDescription())))
                 .andExpect(jsonPath("$.items[0].is_active", equalTo(category.isActive())))
                 .andExpect(jsonPath("$.items[0].created_at", equalTo(category.getCreatedAt().toString())))
-                .andExpect(jsonPath("$.items[0].updated_at", equalTo(category.getUpdatedAt().toString())))
                 .andExpect(jsonPath("$.items[0].deleted_at", equalTo(category.getDeletedAt())));
     }
 }

@@ -14,6 +14,7 @@ import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import com.fullcycle.admin.catalog.infraestructure.api.CategoryAPI;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryApiOutput;
+import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryListResponse;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategoryApiInput;
 import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategoryApiInput;
 import com.fullcycle.admin.catalog.infraestructure.category.presenters.CategoryApiPresenter;
@@ -68,7 +69,7 @@ public class CategoryController implements CategoryAPI {
     }
 
     @Override
-    public Pagination<?> list(
+    public Pagination<CategoryListResponse> list(
             final String search,
             final int page,
             final int perPage,
@@ -79,7 +80,7 @@ public class CategoryController implements CategoryAPI {
                 new CategorySearchQuery(
                         page, perPage, search, sort, direction
                 )
-        );
+        ).map(CategoryApiPresenter::present);
     }
 
     @Override
