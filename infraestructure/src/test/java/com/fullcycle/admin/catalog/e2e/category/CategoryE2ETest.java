@@ -4,6 +4,7 @@ import com.fullcycle.admin.catalog.E2ETest;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryResponse;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategoryRequest;
+import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategoryRequest;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
 import com.fullcycle.admin.catalog.infraestructure.configuration.json.Json;
 import org.junit.jupiter.api.Assertions;
@@ -23,6 +24,7 @@ import java.util.Map;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -151,6 +153,33 @@ public class CategoryE2ETest {
         this.mvc.perform(request)
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", equalTo("Category with ID 123 was not found")));
+    }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToUpdateACategoryByItsIdentifier() throws Exception {
+        final var expectedName = "Séries";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+        final var categoryId = givenACategory("Filmes", "A categoria mais assistida", true);
+
+        final var requestBody = new UpdateCategoryRequest(expectedName, expectedDescription, expectedIsActive);
+
+        final var request = put("/categories/" + categoryId.getValue())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Json.writeValueAsString(requestBody));
+
+        mvc.perform(request)
+                .andExpect(status().isOk());
+
+        final var category = categoryRepository.findById(categoryId.getValue()).get();
+
+        Assertions.assertEquals(expectedName, category.getName());
+        Assertions.assertEquals(expectedDescription, category.getDescription());
+        Assertions.assertEquals(expectedIsActive, category.isActive());
+        Assertions.assertNotNull(category.getCreatedAt());
+        Assertions.assertNotNull(category.getUpdatedAt());
+        Assertions.assertNull(category.getDeletedAt());
+
     }
 
     private ResultActions listCategories(final int page, final int perPage, final String search) throws Exception {
