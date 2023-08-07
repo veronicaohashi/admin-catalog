@@ -108,9 +108,9 @@ public class CategoryE2ETest {
     @Test
     void asACatalogAdminIShouldBeAbleToSortAllCategoriesByDescriptionDesc() throws Exception {
         Assertions.assertEquals(0, categoryRepository.count());
-        givenACategory("Filmes", null, true);
-        givenACategory("Documentários", null, true);
-        givenACategory("Séries", null, true);
+        givenACategory("Filmes", "C", true);
+        givenACategory("Documentários", "Z", true);
+        givenACategory("Séries", "A", true);
 
         listCategories(0, 10, "", "description", "desc")
                 .andExpect(status().isOk())
