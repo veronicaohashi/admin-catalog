@@ -1,11 +1,8 @@
 package com.fullcycle.admin.catalog.application.category.update;
 
 import com.fullcycle.admin.catalog.IntegrationTest;
-import com.fullcycle.admin.catalog.domain.application.category.update.UpdateCategoryCommand;
-import com.fullcycle.admin.catalog.domain.application.category.update.UpdateCategoryUseCase;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
-import com.fullcycle.admin.catalog.domain.exception.DomainException;
 import com.fullcycle.admin.catalog.domain.exception.NotFoundException;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;

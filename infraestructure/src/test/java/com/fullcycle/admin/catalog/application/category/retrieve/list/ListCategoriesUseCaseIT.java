@@ -1,7 +1,6 @@
 package com.fullcycle.admin.catalog.application.category.retrieve.list;
 
 import com.fullcycle.admin.catalog.IntegrationTest;
-import com.fullcycle.admin.catalog.domain.application.category.retrieve.list.ListCategoriesUseCase;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryJpaEntity;

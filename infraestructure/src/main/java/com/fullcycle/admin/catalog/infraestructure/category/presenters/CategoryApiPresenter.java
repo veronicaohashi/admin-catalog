@@ -1,7 +1,7 @@
 package com.fullcycle.admin.catalog.infraestructure.category.presenters;
 
-import com.fullcycle.admin.catalog.domain.application.category.retrieve.get.CategoryOutput;
-import com.fullcycle.admin.catalog.domain.application.category.retrieve.list.CategoryListOutput;
+import com.fullcycle.admin.catalog.application.category.retrieve.get.CategoryOutput;
+import com.fullcycle.admin.catalog.application.category.retrieve.list.CategoryListOutput;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryResponse;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryListResponse;
 

@@ -1,14 +1,14 @@
 package com.fullcycle.admin.catalog.infraestructure.api.controllers;
 
-import com.fullcycle.admin.catalog.domain.application.category.create.CreateCategoryCommand;
-import com.fullcycle.admin.catalog.domain.application.category.create.CreateCategoryOutput;
-import com.fullcycle.admin.catalog.domain.application.category.create.CreateCategoryUseCase;
-import com.fullcycle.admin.catalog.domain.application.category.delete.DeleteCategoryUseCase;
-import com.fullcycle.admin.catalog.domain.application.category.retrieve.get.GetCategoryByIdUseCase;
-import com.fullcycle.admin.catalog.domain.application.category.retrieve.list.ListCategoriesUseCase;
-import com.fullcycle.admin.catalog.domain.application.category.update.UpdateCategoryCommand;
-import com.fullcycle.admin.catalog.domain.application.category.update.UpdateCategoryOutput;
-import com.fullcycle.admin.catalog.domain.application.category.update.UpdateCategoryUseCase;
+import com.fullcycle.admin.catalog.application.category.create.CreateCategoryCommand;
+import com.fullcycle.admin.catalog.application.category.create.CreateCategoryOutput;
+import com.fullcycle.admin.catalog.application.category.create.CreateCategoryUseCase;
+import com.fullcycle.admin.catalog.application.category.delete.DeleteCategoryUseCase;
+import com.fullcycle.admin.catalog.application.category.retrieve.get.GetCategoryByIdUseCase;
+import com.fullcycle.admin.catalog.application.category.retrieve.list.ListCategoriesUseCase;
+import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryCommand;
+import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryOutput;
+import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryUseCase;
 import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;

@@ -1,54 +1,54 @@
 package com.fullcycle.admin.catalog.application.category.delete;
 
-import com.fullcycle.admin.catalog.IntegrationTest;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
-import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryJpaEntity;
-import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
-@IntegrationTest
-public class DeleteCategoryUseCaseIT {
-    @Autowired
-    private DeleteCategoryUseCase useCase;
+@ExtendWith(MockitoExtension.class)
+public class DeleteCategoryUseCaseTest {
 
-    @Autowired
-    private CategoryRepository repository;
-
-    @SpyBean
+    @InjectMocks
+    private DefaultDeleteCategoryUseCase useCase;
+    @Mock
     private CategoryGateway categoryGateway;
+
+    @BeforeEach
+    void cleanUp() {
+        Mockito.reset(categoryGateway);
+    }
 
     @Test
     public void givenAValidCategoryId_whenCallsDeleteCategory_thenBeOK() {
         final var category = Category.newCategory("Film", "Description", true);
         final var expectedId = category.getId();
-        repository.saveAndFlush(CategoryJpaEntity.from(category));
-        Assertions.assertEquals(1, repository.count());
+        doNothing()
+                .when(categoryGateway).deleteById(eq(expectedId));
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(expectedId.getValue()));
 
-        Assertions.assertEquals(0, repository.count());
+        verify(categoryGateway, times(1)).deleteById(eq(expectedId));
     }
 
     @Test
     public void givenAInvalidId_whenCallsDeleteCategory_thenBeOK() {
-        final var category = Category.newCategory("Film", "Description", true);
         final var expectedId = CategoryID.from("123");
-        repository.saveAndFlush(CategoryJpaEntity.from(category));
-        Assertions.assertEquals(1, repository.count());
+        doNothing()
+                .when(categoryGateway).deleteById(eq(expectedId));
 
         Assertions.assertDoesNotThrow(() -> useCase.execute(expectedId.getValue()));
 
-        Assertions.assertEquals(1, repository.count());
+        verify(categoryGateway, times(1)).deleteById(eq(expectedId));
     }
 
     @Test
