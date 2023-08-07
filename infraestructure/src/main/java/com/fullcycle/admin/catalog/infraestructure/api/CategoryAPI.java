@@ -53,7 +53,6 @@ public interface CategoryAPI {
     })
     @GetMapping(
             value = "{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     CategoryResponse getById(@PathVariable(name = "id") String id);
@@ -74,7 +73,6 @@ public interface CategoryAPI {
 
     @DeleteMapping(
             value = "{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
