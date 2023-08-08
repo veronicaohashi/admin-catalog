@@ -1,8 +1,12 @@
 package com.fullcycle.admin.catalog.domain.genre;
 
+import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exception.NotificationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class GenreTest {
 
@@ -95,6 +99,65 @@ class GenreTest {
         Assertions.assertEquals(expectedIsActive, genre.isActive());
         Assertions.assertTrue(genre.getUpdatedAt().isAfter(inactiveGenreUpdatedAt));
         Assertions.assertNull(genre.getDeletedAt());
+    }
 
+    @Test
+    void givenAValidGenre_whenCallUpdate_thenReturnGenreUpdated() {
+        final var expectedName = "Terror";
+        final var expectedIsActive = true;
+        final var expectedCategories = List.of(CategoryID.from("123"));
+        final var genre = Genre.newGenre("Ação", false);
+        final var genreUpdatedAt = genre.getUpdatedAt();
+
+        genre.update(expectedName, expectedIsActive, expectedCategories);
+
+        Assertions.assertNotNull(genre.getId());
+        Assertions.assertEquals(expectedName, genre.getName());
+        Assertions.assertEquals(expectedIsActive, genre.isActive());
+        Assertions.assertEquals(expectedCategories, genre.getCategories());
+        Assertions.assertNotNull(genre.getCreatedAt());
+        Assertions.assertTrue(genre.getUpdatedAt().isAfter(genreUpdatedAt));
+        Assertions.assertNull(genre.getDeletedAt());
+    }
+
+    @Test
+    void givenAValidGenre_whenCallUpdateToInactive_thenReturnGenreUpdated() {
+        final var name = "Terror";
+        final var expectedIsActive = false;
+        final var categories = List.of(CategoryID.from("123"));
+        final var genre = Genre.newGenre(name, true);
+        final var genreUpdatedAt = genre.getUpdatedAt();
+
+        genre.update(name, expectedIsActive, categories);
+
+        Assertions.assertEquals(expectedIsActive, genre.isActive());
+        Assertions.assertTrue(genre.getUpdatedAt().isAfter(genreUpdatedAt));
+        Assertions.assertNotNull(genre.getDeletedAt());
+    }
+
+    @Test
+    void givenAValidGenre_whenCallUpdateWithEmptyName_thenReceiveNotificationException() {
+        final var invalidName = " ";
+        final var expectedErrorMessage = "'name' should not be empty";
+        final var genre = Genre.newGenre("acao", false);
+
+        final var exception = Assertions.assertThrows(NotificationException.class, () -> {
+            genre.update(invalidName, true, List.of());
+        });
+
+        Assertions.assertEquals(expectedErrorMessage, exception.getErrors().get(0).message());
+    }
+
+    @Test
+    void givenAValidGenre_whenCallUpdateWithNullName_thenReceiveNotificationException() {
+        final String invalidName = null;
+        final var expectedErrorMessage = "'name' should not be null";
+        final var genre = Genre.newGenre("acao", false);
+
+        final var actualException = Assertions.assertThrows(NotificationException.class, () -> {
+            genre.update(invalidName, true, List.of());
+        });
+
+        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
     }
 }

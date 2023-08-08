@@ -37,7 +37,10 @@ public class Genre extends AggregateRoot<GenreID> {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
+        selfValidate();
+    }
 
+    private void selfValidate() {
         final var notification = Notification.create();
         validate(notification);
 
@@ -88,6 +91,39 @@ public class Genre extends AggregateRoot<GenreID> {
         );
     }
 
+    public Genre deactivate() {
+        if(getDeletedAt() == null) {
+            this.deletedAt = InstantUtils.now();
+        }
+        active = false;
+        updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Genre activate() {
+        active = true;
+        updatedAt = InstantUtils.now();
+        deletedAt = null;
+        return this;
+    }
+
+    public Genre update(
+            final String name,
+            final boolean active,
+            final List<CategoryID> categories
+    ) {
+        if(active) {
+            activate();
+        } else {
+            deactivate();
+        }
+        this.name = name;
+        this.categories = new ArrayList<>(categories);
+        this.updatedAt = InstantUtils.now();
+        selfValidate();
+        return this;
+    }
+
     @Override
     public void validate(ValidationHandler handler) {
         new GenreValidator(this, handler).validate();
@@ -115,21 +151,5 @@ public class Genre extends AggregateRoot<GenreID> {
 
     public Instant getDeletedAt() {
         return deletedAt;
-    }
-
-    public Genre deactivate() {
-        if(getDeletedAt() == null) {
-            this.deletedAt = InstantUtils.now();
-        }
-        active = false;
-        updatedAt = InstantUtils.now();
-        return this;
-    }
-
-    public Genre activate() {
-        active = true;
-        updatedAt = InstantUtils.now();
-        deletedAt = null;
-        return this;
     }
 }
