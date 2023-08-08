@@ -1,15 +1,14 @@
-package com.fullcycle.admin.catalog.domain;
+package com.fullcycle.admin.catalog.domain.category;
 
-import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.exception.DomainException;
 import com.fullcycle.admin.catalog.domain.validation.handler.ThrowsValidationHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CategoryTest {
+class CategoryTest {
 
     @Test
-    public void givenAValidParams_whenCallNewCategory_thenInstantiateACategory() {
+    void givenAValidParams_whenCallNewCategory_thenInstantiateACategory() {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -27,7 +26,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAnInvalidNullName_whenCallNewCategory_thenReturnAnException() {
+    void givenAnInvalidNullName_whenCallNewCategory_thenReturnAnException() {
         final String invalidName = null;
         final var expectedDescription = "A categoria mais assistida";
         final var expectedErrorMessage = "'name' should not be null";
@@ -42,7 +41,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAnInvalidNameLengthLessThan3_whenCallNewCategory_thenReturnAnException() {
+    void givenAnInvalidNameLengthGreaterThan255_whenCallNewCategory_thenReturnAnException() {
         final var invalidName = """
                 A certificação de metodologias que nos auxiliam a lidar com a crescente influência da mídia talvez venha
                  a ressaltar a relatividade do processo de comunicação como um todo. Todas estas questões, devidamente 
@@ -62,7 +61,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAnInvalidEmptyName_whenCallNewCategory_thenReturnAnException() {
+    void givenAnInvalidEmptyName_whenCallNewCategory_thenReturnAnException() {
         final var invalidName = " ";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedErrorMessage = "'name' should not be empty";
@@ -77,7 +76,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidDescriptionEmpty_whenCallNewCategory_thenInstantiateACategory() {
+    void givenAValidDescriptionEmpty_whenCallNewCategory_thenInstantiateACategory() {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = false;
@@ -91,7 +90,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidInactive_whenCallNewCategory_thenInstantiateACategory() {
+    void givenAValidInactive_whenCallNewCategory_thenInstantiateACategory() {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = false;
@@ -107,7 +106,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactivated() {
+    void givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactivated() {
         final var expectedIsActive = false;
 
         final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
@@ -121,7 +120,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidInactiveCategory_whenCallActivate_thenReturnCategoryActivated() {
+    void givenAValidInactiveCategory_whenCallActivate_thenReturnCategoryActivated() {
         final var expectedIsActive = true;
         final var category = Category.newCategory("Filmes", "A categoria mais assistida", false);
         final var updatedAt = category.getUpdatedAt();
@@ -134,7 +133,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidCategory_whenCallUpdate_thenReturnCategoryUpdated() {
+    void givenAValidCategory_whenCallUpdate_thenReturnCategoryUpdated() {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -153,7 +152,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidCategory_whenCallUpdateToInactive_thenReturnCategoryUpdated() {
+    void givenAValidCategory_whenCallUpdateToInactive_thenReturnCategoryUpdated() {
         final var expectedIsActive = false;
         final var category = Category.newCategory("Filmes", "Categoria mais assistida", true);
         final var expectedCreatedAt = category.getCreatedAt();
@@ -168,7 +167,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidCategory_whenCallUpdateWithInvalidParams_thenReturnCategoryUpdated() {
+    void givenAValidCategory_whenCallUpdateWithInvalidParams_thenReturnCategoryUpdated() {
         final String expectedName = null;
         final var category = Category.newCategory("Filmes", "Categoria mais assistida", true);
 
