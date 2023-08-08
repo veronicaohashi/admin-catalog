@@ -1,7 +1,6 @@
 package com.fullcycle.admin.catalog.domain.genre;
 
-import com.fullcycle.admin.catalog.domain.exception.DomainException;
-import com.fullcycle.admin.catalog.domain.validation.handler.ThrowsValidationHandler;
+import com.fullcycle.admin.catalog.domain.exception.NotificationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,11 +29,9 @@ class GenreTest {
         final var expectedIsActive = true;
         final var expectedErrorMessage = "'name' should not be null";
 
-        final var genre = Genre.newGenre(expectedName, expectedIsActive);
-
         final var exception = Assertions.assertThrows(
-                DomainException.class,
-                () -> genre.validate(new ThrowsValidationHandler())
+                NotificationException.class,
+                () -> Genre.newGenre(expectedName, expectedIsActive)
         );
 
         Assertions.assertEquals(expectedErrorMessage, exception.getErrors().get(0).message());
@@ -47,11 +44,9 @@ class GenreTest {
         final var expectedIsActive = true;
         final var expectedErrorMessage = "'name' should not be empty";
 
-        final var genre = Genre.newGenre(invalidName, expectedIsActive);
-
         final var exception = Assertions.assertThrows(
-                DomainException.class,
-                () -> genre.validate(new ThrowsValidationHandler())
+                NotificationException.class,
+                () -> Genre.newGenre(invalidName, expectedIsActive)
         );
 
         Assertions.assertEquals(expectedErrorMessage, exception.getErrors().get(0).message());
@@ -68,11 +63,9 @@ class GenreTest {
         final var expectedIsActive = true;
         final var expectedErrorMessage = "'name' must be between 3 and 255 character";
 
-        final var genre = Genre.newGenre(invalidName, expectedIsActive);
-
         final var exception = Assertions.assertThrows(
-                DomainException.class,
-                () -> genre.validate(new ThrowsValidationHandler())
+                NotificationException.class,
+                () -> Genre.newGenre(invalidName, expectedIsActive)
         );
 
         Assertions.assertEquals(expectedErrorMessage, exception.getErrors().get(0).message());
