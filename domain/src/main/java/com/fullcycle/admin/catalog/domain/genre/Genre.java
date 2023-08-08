@@ -3,6 +3,7 @@ package com.fullcycle.admin.catalog.domain.genre;
 import com.fullcycle.admin.catalog.domain.AggregateRoot;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exception.NotificationException;
+import com.fullcycle.admin.catalog.domain.utils.InstantUtils;
 import com.fullcycle.admin.catalog.domain.validation.ValidationHandler;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 
@@ -50,7 +51,7 @@ public class Genre extends AggregateRoot<GenreID> {
             final boolean active
     ) {
         final var id = GenreID.unique();
-        final var now = Instant.now();
+        final var now = InstantUtils.now();
         final var deletedAt = active ? null : now;
         return new Genre(id, name, active, new ArrayList<>(), now, now, deletedAt);
     }
@@ -114,5 +115,21 @@ public class Genre extends AggregateRoot<GenreID> {
 
     public Instant getDeletedAt() {
         return deletedAt;
+    }
+
+    public Genre deactivate() {
+        if(getDeletedAt() == null) {
+            this.deletedAt = InstantUtils.now();
+        }
+        active = false;
+        updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Genre activate() {
+        active = true;
+        updatedAt = InstantUtils.now();
+        deletedAt = null;
+        return this;
     }
 }

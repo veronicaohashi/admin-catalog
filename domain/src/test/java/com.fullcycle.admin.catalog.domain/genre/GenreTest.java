@@ -70,4 +70,31 @@ class GenreTest {
 
         Assertions.assertEquals(expectedErrorMessage, exception.getErrors().get(0).message());
     }
+
+    @Test
+    void givenAValidActiveGenre_whenCallDeactivate_thenReturnAGenreInactivated() {
+        final var expectedIsActive = false;
+        final var genre = Genre.newGenre("Ação", true);
+        final var activeGenreUpdatedAt = genre.getUpdatedAt();
+
+        genre.deactivate();
+
+        Assertions.assertEquals(expectedIsActive, genre.isActive());
+        Assertions.assertTrue(genre.getUpdatedAt().isAfter(activeGenreUpdatedAt));
+        Assertions.assertNotNull(genre.getDeletedAt());
+    }
+
+    @Test
+    void givenAValidInactiveGenre_whenCallActivate_thenReturnGenreActivated() {
+        final var expectedIsActive = true;
+        final var genre = Genre.newGenre("Ação", false);
+        final var inactiveGenreUpdatedAt = genre.getUpdatedAt();
+
+        genre.activate();
+
+        Assertions.assertEquals(expectedIsActive, genre.isActive());
+        Assertions.assertTrue(genre.getUpdatedAt().isAfter(inactiveGenreUpdatedAt));
+        Assertions.assertNull(genre.getDeletedAt());
+
+    }
 }
