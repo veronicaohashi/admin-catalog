@@ -2,7 +2,7 @@ package com.fullcycle.admin.catalog.infraestructure.category;
 
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
-import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
+import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.MySQLGatewayTest;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
@@ -139,7 +139,7 @@ public class CategoryMySQLGatewayTest {
                         CategoryJpaEntity.from(documentary)
                 )
         );
-        final var query = new CategorySearchQuery(0, 1, "", "name", "asc");
+        final var query = new SearchQuery(0, 1, "", "name", "asc");
 
         final var response = categoryGateway.findAll(query);
 
@@ -155,7 +155,7 @@ public class CategoryMySQLGatewayTest {
         final var expectedPage = 0;
         final var expectedPerPage = 1;
         final var expectedTotal = 0;
-        final var query = new CategorySearchQuery(0, 1, "", "name", "asc");
+        final var query = new SearchQuery(0, 1, "", "name", "asc");
 
         final var response = categoryGateway.findAll(query);
 
@@ -179,7 +179,7 @@ public class CategoryMySQLGatewayTest {
                         CategoryJpaEntity.from(documentary)
                 )
         );
-        final var query = new CategorySearchQuery(0, 3, "", "name", "asc");
+        final var query = new SearchQuery(0, 3, "", "name", "asc");
 
         final var response = categoryGateway.findAll(query);
 
@@ -206,7 +206,7 @@ public class CategoryMySQLGatewayTest {
                         CategoryJpaEntity.from(documentary)
                 )
         );
-        final var query = new CategorySearchQuery(0, 1, "doc", "name", "asc");
+        final var query = new SearchQuery(0, 1, "doc", "name", "asc");
 
         final var response = categoryGateway.findAll(query);
 
@@ -231,7 +231,7 @@ public class CategoryMySQLGatewayTest {
                         CategoryJpaEntity.from(documentary)
                 )
         );
-        final var query = new CategorySearchQuery(0, 1, "mais assistida", "name", "asc");
+        final var query = new SearchQuery(0, 1, "mais assistida", "name", "asc");
 
         final var response = categoryGateway.findAll(query);
 

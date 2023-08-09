@@ -1,7 +1,7 @@
 package com.fullcycle.admin.catalog.application.category.retrieve.list;
 
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
-import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
+import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 
 import java.util.Objects;
@@ -15,7 +15,7 @@ public class DefaultListCategoriesUseCase extends ListCategoriesUseCase{
     }
 
     @Override
-    public Pagination<CategoryListOutput> execute(final CategorySearchQuery categorySearchQuery) {
-        return this.categoryGateway.findAll(categorySearchQuery).map(CategoryListOutput::from);
+    public Pagination<CategoryListOutput> execute(final SearchQuery searchQuery) {
+        return this.categoryGateway.findAll(searchQuery).map(CategoryListOutput::from);
     }
 }

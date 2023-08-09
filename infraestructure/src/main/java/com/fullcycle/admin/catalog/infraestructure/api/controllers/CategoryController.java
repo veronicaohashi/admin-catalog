@@ -9,7 +9,7 @@ import com.fullcycle.admin.catalog.application.category.retrieve.list.ListCatego
 import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryCommand;
 import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryOutput;
 import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryUseCase;
-import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
+import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import com.fullcycle.admin.catalog.infraestructure.api.CategoryAPI;
@@ -77,7 +77,7 @@ public class CategoryController implements CategoryAPI {
             final String direction
     ) {
         return listCategoriesUseCase.execute(
-                new CategorySearchQuery(
+                new SearchQuery(
                         page, perPage, search, sort, direction
                 )
         ).map(CategoryApiPresenter::present);
