@@ -124,6 +124,24 @@ public class Genre extends AggregateRoot<GenreID> {
         return this;
     }
 
+    public Genre addCategory(final CategoryID categoryID) {
+        if(categoryID == null) {
+            return this;
+        }
+        categories.add(categoryID);
+        updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Genre removeCategory(final CategoryID categoryID) {
+        if(categoryID == null) {
+            return this;
+        }
+        categories.remove(categoryID);
+        updatedAt = InstantUtils.now();
+        return this;
+    }
+
     @Override
     public void validate(ValidationHandler handler) {
         new GenreValidator(this, handler).validate();
