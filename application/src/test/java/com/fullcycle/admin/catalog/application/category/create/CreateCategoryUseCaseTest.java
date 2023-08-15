@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalog.application.category.create;
 
+import com.fullcycle.admin.catalog.application.UseCaseTest;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
@@ -17,22 +19,20 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class CreateCategoryUseCaseTest {
+class CreateCategoryUseCaseTest extends UseCaseTest {
 
     @InjectMocks
     private DefaultCreateCategoryUseCase useCase;
 
     @Mock
     private CategoryGateway categoryGateway;
-
-    @BeforeEach
-    void cleanUp() {
-        Mockito.reset(categoryGateway);
+    @Override
+    protected List<Object> getMocks() {
+        return List.of(categoryGateway);
     }
 
     @Test
-    public void givenAValidCommand_whenCallsCreateCategory_thenReturnCategoryId() {
+    void givenAValidCommand_whenCallsCreateCategory_thenReturnCategoryId() {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -55,7 +55,7 @@ public class CreateCategoryUseCaseTest {
     }
 
     @Test
-    public void givenAnInvalidName_whenCallsCreateCategory_thenReturnDomainException() {
+    void givenAnInvalidName_whenCallsCreateCategory_thenReturnDomainException() {
         final String invalidName = null;
         final var command = CreateCategoryCommand.with(invalidName, "Description", true);
         final var expectedErrorMessage = "'name' should not be null";
@@ -67,7 +67,7 @@ public class CreateCategoryUseCaseTest {
     }
 
     @Test
-    public void givenAValidInactivateCommand_whenCallsCreateCategory_shouldReturnInactiveCategoryId() {
+    void givenAValidInactivateCommand_whenCallsCreateCategory_shouldReturnInactiveCategoryId() {
         final boolean expectedActive = false;
         final var command = CreateCategoryCommand.with("name", "Description", expectedActive);
 
@@ -86,7 +86,7 @@ public class CreateCategoryUseCaseTest {
     }
 
     @Test
-    public void givenAValidCommand_whenGatewayThrowsRandomException_thenReturnAException() {
+    void givenAValidCommand_whenGatewayThrowsRandomException_thenReturnAException() {
         final var command = CreateCategoryCommand.with("Name", "Description", true);
         final var expectedErrorMessage = "Gateway error";
 

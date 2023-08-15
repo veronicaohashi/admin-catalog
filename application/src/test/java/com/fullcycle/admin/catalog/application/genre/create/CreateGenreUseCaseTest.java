@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalog.application.genre.create;
 
+import com.fullcycle.admin.catalog.application.UseCaseTest;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exception.NotificationException;
@@ -19,8 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-class CreateGenreUseCaseTest {
+class CreateGenreUseCaseTest extends UseCaseTest {
 
     @Mock
     private CategoryGateway categoryGateway;
@@ -30,6 +30,11 @@ class CreateGenreUseCaseTest {
 
     @InjectMocks
     private DefaultCreateGenreUseCase useCase;
+
+    @Override
+    protected List<Object> getMocks() {
+        return List.of(categoryGateway, genreGateway);
+    }
 
     @Test
     void givenAValidCommand_whenCallsCreateGenre_thenReturnGenreId() {

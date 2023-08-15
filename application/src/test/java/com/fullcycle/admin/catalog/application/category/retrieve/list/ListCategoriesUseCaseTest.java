@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalog.application.category.retrieve.list;
 
+import com.fullcycle.admin.catalog.application.UseCaseTest;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
@@ -18,8 +19,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-public class ListCategoriesUseCaseTest {
+class ListCategoriesUseCaseTest extends UseCaseTest {
 
     @InjectMocks
     private DefaultListCategoriesUseCase useCase;
@@ -27,9 +27,9 @@ public class ListCategoriesUseCaseTest {
     @Mock
     private CategoryGateway categoryGateway;
 
-    @BeforeEach
-    void cleanUp() {
-        Mockito.reset(categoryGateway);
+    @Override
+    protected List<Object> getMocks() {
+        return List.of(categoryGateway);
     }
 
     @Test
