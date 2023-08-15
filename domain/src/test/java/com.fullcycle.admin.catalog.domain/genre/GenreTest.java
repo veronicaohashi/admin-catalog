@@ -231,4 +231,38 @@ class GenreTest {
         Assertions.assertEquals(genreUpdatedAt, genre.getUpdatedAt());
         Assertions.assertNull(genre.getDeletedAt());
     }
+
+    @Test
+    void givenAValidEmptyCategoriesGenre_whenCallAddCategories_thenReceiveOK() {
+        final var seriesID = CategoryID.from("123");
+        final var moviesID = CategoryID.from("456");
+        final var expectedCategories = List.of(seriesID, moviesID);
+        final var genre = Genre.newGenre("acao", true);
+        final var genreUpdatedAt = genre.getUpdatedAt();
+
+        Assertions.assertEquals(0, genre.getCategories().size());
+
+        genre.addCategories(expectedCategories);
+
+        Assertions.assertEquals(expectedCategories, genre.getCategories());
+        Assertions.assertNotNull(genre.getCreatedAt());
+        Assertions.assertTrue(genre.getUpdatedAt().isAfter(genreUpdatedAt));
+        Assertions.assertNull(genre.getDeletedAt());
+    }
+
+    @Test
+    void givenAValidEmptyCategoriesGenre_whenCallAddCategoriesWithNullList_thenReceiveOK() {
+        final var expectedCategories = List.of();
+        final var genre = Genre.newGenre("acao", true);
+        final var expectedUpdatedAt = genre.getUpdatedAt();
+
+        Assertions.assertEquals(0, genre.getCategories().size());
+
+        genre.addCategories(null);
+
+        Assertions.assertEquals(expectedCategories, genre.getCategories());
+        Assertions.assertNotNull(genre.getCreatedAt());
+        Assertions.assertEquals(expectedUpdatedAt, genre.getUpdatedAt());
+        Assertions.assertNull(genre.getDeletedAt());
+    }
 }
