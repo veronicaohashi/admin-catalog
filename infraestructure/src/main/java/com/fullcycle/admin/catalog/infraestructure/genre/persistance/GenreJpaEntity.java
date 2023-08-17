@@ -7,6 +7,7 @@ import com.fullcycle.admin.catalog.domain.genre.GenreID;
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.ALL;
@@ -35,7 +36,7 @@ public class GenreJpaEntity {
     @Column(name = "updated_at", nullable = false, columnDefinition = "DATETIME(6)")
     private Instant updatedAt;
 
-    @Column(name = "deleted_at", nullable = false, columnDefinition = "DATETIME(6)")
+    @Column(name = "deleted_at", columnDefinition = "DATETIME(6)")
     private Instant deletedAt;
 
     public GenreJpaEntity() {}
@@ -72,17 +73,17 @@ public class GenreJpaEntity {
         return entity;
     }
 
-    public Genre toAggregate(final GenreJpaEntity genre) {
+    public Genre toAggregate() {
         return Genre.with(
-                GenreID.from(genre.id),
-                genre.name,
-                genre.active,
-                categories.stream()
+                GenreID.from(getId()),
+                getName(),
+                isActive(),
+                getCategories().stream()
                         .map(it -> CategoryID.from(it.getId().getCategoryId()))
                         .toList(),
-                genre.createdAt,
-                genre.updatedAt,
-                genre.deletedAt
+                getCreatedAt(),
+                getUpdatedAt(),
+                getDeletedAt()
         );
     }
 
@@ -92,6 +93,12 @@ public class GenreJpaEntity {
 
     private void removeCategory(final CategoryID id) {
         this.categories.remove(GenreCategoryJpaEntity.from(this, id));
+    }
+
+    public List<CategoryID> getCategoryIDs() {
+        return getCategories().stream()
+                .map(it -> CategoryID.from(it.getId().getCategoryId()))
+                .toList();
     }
 
     public String getId() {
