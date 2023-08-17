@@ -16,6 +16,7 @@ import static javax.persistence.FetchType.EAGER;
 @Table(name = "genres")
 public class GenreJpaEntity {
 
+    @Id
     @Column(name = "id", nullable = false)
     private String id;
 
@@ -31,10 +32,10 @@ public class GenreJpaEntity {
     @Column(name = "created_at", nullable = false, columnDefinition = "DATETIME(6)")
     private Instant createdAt;
 
-    @Column(name = "name", nullable = false, columnDefinition = "DATETIME(6)")
+    @Column(name = "updated_at", nullable = false, columnDefinition = "DATETIME(6)")
     private Instant updatedAt;
 
-    @Column(name = "name", nullable = false, columnDefinition = "DATETIME(6)")
+    @Column(name = "deleted_at", nullable = false, columnDefinition = "DATETIME(6)")
     private Instant deletedAt;
 
     public GenreJpaEntity() {}
