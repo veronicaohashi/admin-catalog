@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @MySQLGatewayTest
-public class CategoryMySQLGatewayTest {
+class CategoryMySQLGatewayTest {
 
     @Autowired
     private CategoryMySQLGateway categoryGateway;
@@ -22,7 +22,7 @@ public class CategoryMySQLGatewayTest {
     private CategoryRepository categoryRepository;
 
     @Test
-    public void givenAValidCategory_whenCallsCreate_thenReturnANewCategory() {
+    void givenAValidCategory_whenCallsCreate_thenReturnANewCategory() {
         final var expectedName = "Filme";
         final var expectedDescription = "Um filme";
         final var expectedIsActive = true;
@@ -52,7 +52,7 @@ public class CategoryMySQLGatewayTest {
     }
 
     @Test
-    public void givenAValidCategory_whenCallsUpdate_thenReturnACategoryUpdated() {
+    void givenAValidCategory_whenCallsUpdate_thenReturnACategoryUpdated() {
         final var expectedName = "Filme";
         final var expectedDescription = "Um filme";
         final var expectedIsActive = true;
@@ -86,7 +86,7 @@ public class CategoryMySQLGatewayTest {
     }
 
     @Test
-    public void givenAPrePersistedCategoryAndValidCategoryId_whenTryToDeleteIt_thenDeleteCategory() {
+    void givenAPrePersistedCategoryAndValidCategoryId_whenTryToDeleteIt_thenDeleteCategory() {
         final var category = Category.newCategory("Filme", "O filme mais assistido", false);
         categoryRepository.saveAndFlush(CategoryJpaEntity.from(category));
 
@@ -96,14 +96,14 @@ public class CategoryMySQLGatewayTest {
     }
 
     @Test
-    public void givenInvalidCategoryId_whenTryToDeleteIt_shouldDeleteCategory() {
+    void givenInvalidCategoryId_whenTryToDeleteIt_shouldDeleteCategory() {
         categoryGateway.deleteById(CategoryID.from("invalid"));
 
         Assertions.assertEquals(0, categoryRepository.count());
     }
 
     @Test
-    public void givenAPrePersistedCategoryAndValidCategoryId_whenCallsFindById_thenReturnCategory() {
+    void givenAPrePersistedCategoryAndValidCategoryId_whenCallsFindById_thenReturnCategory() {
         final var category = Category.newCategory("Filme", "O filme mais assistido", true);
         categoryRepository.saveAndFlush(CategoryJpaEntity.from(category));
 
@@ -119,14 +119,14 @@ public class CategoryMySQLGatewayTest {
     }
 
     @Test
-    public void givenValidCategoryIdNotStored_whenCallsFindById_thenReturnEmpty() {
+    void givenValidCategoryIdNotStored_whenCallsFindById_thenReturnEmpty() {
         final var response = categoryGateway.findById(CategoryID.from("empty"));
 
         Assertions.assertTrue(response.isEmpty());
     }
 
     @Test
-    public void givenPrePersistedCategories_whenCallsFindAll_thenReturnPaginated() {
+    void givenPrePersistedCategories_whenCallsFindAll_thenReturnPaginated() {
         final var expectedPage = 0;
         final var expectedPerPage = 1;
         final var expectedTotal = 3;
@@ -151,7 +151,7 @@ public class CategoryMySQLGatewayTest {
     }
 
     @Test
-    public void givenEmptyCategoriesTable_whenCallsFindAll_returnEmptyPage() {
+    void givenEmptyCategoriesTable_whenCallsFindAll_returnEmptyPage() {
         final var expectedPage = 0;
         final var expectedPerPage = 1;
         final var expectedTotal = 0;
@@ -166,7 +166,7 @@ public class CategoryMySQLGatewayTest {
     }
 
     @Test
-    public void givenFollowPagination_whenCallsFindAllWithPage1_thenReturnPaginated() {
+    void givenFollowPagination_whenCallsFindAllWithPage1_thenReturnPaginated() {
         final var expectedPage = 0;
         final var expectedPerPage = 3;
         final var expectedTotal = 3;
@@ -193,7 +193,7 @@ public class CategoryMySQLGatewayTest {
     }
 
     @Test
-    public void givenPrePersistedCategoriesAndDocAsTerms_whenCallsFindAllAndTermsMatchesCategoryName_thenReturnPaginated() {
+    void givenPrePersistedCategoriesAndDocAsTerms_whenCallsFindAllAndTermsMatchesCategoryName_thenReturnPaginated() {
         final var expectedPage = 0;
         final var expectedPerPage = 1;
         final var expectedTotal = 1;
@@ -218,7 +218,7 @@ public class CategoryMySQLGatewayTest {
     }
 
     @Test
-    public void givenPrePersistedCategoriesAndMaisAssistidaAsTerms_whenCallsFindAllAndTermsMatchesCategoryDescription_thenReturnPaginated() {
+    void givenPrePersistedCategoriesAndMaisAssistidaAsTerms_whenCallsFindAllAndTermsMatchesCategoryDescription_thenReturnPaginated() {
         final var expectedPage = 0;
         final var expectedPerPage = 1;
         final var expectedTotal = 1;

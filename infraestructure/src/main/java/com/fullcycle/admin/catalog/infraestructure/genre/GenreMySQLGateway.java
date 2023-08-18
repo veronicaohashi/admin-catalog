@@ -7,10 +7,17 @@ import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.infraestructure.genre.persistance.GenreJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.genre.persistance.GenreRepository;
+import com.fullcycle.admin.catalog.infraestructure.utils.SpecificationUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.Optional;
+
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @Component
 public class GenreMySQLGateway implements GenreGateway {
@@ -47,8 +54,30 @@ public class GenreMySQLGateway implements GenreGateway {
     }
 
     @Override
-    public Pagination<Genre> findAll(SearchQuery searchQuery) {
-        return null;
+    public Pagination<Genre> findAll(final SearchQuery query) {
+        final var page = PageRequest.of(
+                query.page(),
+                query.perPage(),
+                Sort.by(Sort.Direction.fromString(query.direction()), query.sort())
+        );
+
+        final var where = Optional.ofNullable(query.terms())
+                        .filter(str -> !str.isBlank())
+                        .map(this::assembleSpecification)
+                        .orElse(null);
+
+        final var pageResult = repository.findAll(where(where), page);
+
+        return new Pagination<>(
+                pageResult.getNumber(),
+                pageResult.getSize(),
+                pageResult.getTotalElements(),
+                pageResult.map(GenreJpaEntity::toAggregate).toList()
+        );
+    }
+
+    private Specification<GenreJpaEntity> assembleSpecification(final String terms) {
+        return SpecificationUtils.like("name", terms);
     }
 
     private Genre save(Genre genre) {
