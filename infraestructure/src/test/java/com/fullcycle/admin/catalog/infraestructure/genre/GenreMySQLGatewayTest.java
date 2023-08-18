@@ -6,6 +6,7 @@ import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.genre.Genre;
 import com.fullcycle.admin.catalog.domain.genre.GenreGateway;
+import com.fullcycle.admin.catalog.domain.genre.GenreID;
 import com.fullcycle.admin.catalog.infraestructure.genre.persistance.GenreJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.genre.persistance.GenreRepository;
 import org.junit.jupiter.api.Assertions;
@@ -171,5 +172,25 @@ class GenreMySQLGatewayTest {
 
         Assertions.assertEquals(expectedIsActive, persistedGenre.isActive());
         Assertions.assertNotNull(persistedGenre.getDeletedAt());
+    }
+
+    @Test
+    void givenAPrePersistedGenre_whenCallsDeleteById_thenDeleteGenre() {
+        final var genre = Genre.newGenre("Terror", true);
+        final var expectedId = genre.getId();
+
+        genreRepository.saveAndFlush(GenreJpaEntity.from(genre));
+
+        genreGateway.deleteById(expectedId);
+
+        Assertions.assertEquals(0, genreRepository.count());
+    }
+
+    @Test
+    void givenAnInvalidGenre_whenCallsDeleteById_thenReturnOK() {
+        genreGateway.deleteById(GenreID.from("123"));
+
+        Assertions.assertEquals(0, genreRepository.count());
+
     }
 }
