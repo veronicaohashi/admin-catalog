@@ -3,8 +3,8 @@ package com.fullcycle.admin.catalog.infraestructure.category;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
-import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
+import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import static com.fullcycle.admin.catalog.infraestructure.utils.SpecificationUtils.like;
 
@@ -85,8 +86,13 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public List<CategoryID> existsByIds(Iterable<CategoryID> ids) {
-        // TODO: Implementar quando chegar na camada de infraestrutura de Genre.
-        return null;
+    public List<CategoryID> existsByIds(Iterable<CategoryID> categoryIDS) {
+        final var ids = StreamSupport.stream(categoryIDS.spliterator(), false)
+                .map(CategoryID::getValue)
+                .toList();
+
+        return repository.existsByIds(ids).stream()
+                .map(CategoryID::from)
+                .toList();
     }
 }
