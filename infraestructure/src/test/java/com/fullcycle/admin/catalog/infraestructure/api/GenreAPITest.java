@@ -99,7 +99,7 @@ class GenreAPITest {
     @Test
     void givenAValidId_whenCallsGetGenreById_thenReturnGenre() throws Exception {
         final var expectedName = "Terror";
-        final var expectedIsActive = true;
+        final var expectedIsActive = false;
         final var expectedCategories = List.of("123", "456");
         final var genre = Genre.newGenre(expectedName, expectedIsActive).addCategories(
                 expectedCategories.stream()
@@ -117,7 +117,13 @@ class GenreAPITest {
         mvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.id", Matchers.equalTo(expectedId)));
+                .andExpect(jsonPath("$.id", Matchers.equalTo(expectedId)))
+                .andExpect(jsonPath("$.name", Matchers.equalTo(expectedName)))
+                .andExpect(jsonPath("$.is_active", Matchers.equalTo(expectedIsActive)))
+                .andExpect(jsonPath("$.categories_id", Matchers.equalTo(expectedCategories)))
+                .andExpect(jsonPath("$.created_at", Matchers.equalTo(genre.getCreatedAt().toString())))
+                .andExpect(jsonPath("$.updated_at", Matchers.equalTo(genre.getUpdatedAt().toString())))
+                .andExpect(jsonPath("$.deleted_at", Matchers.equalTo(genre.getDeletedAt().toString())));
         verify(getGenreByIdUseCase).execute(eq(expectedId));
     }
 
