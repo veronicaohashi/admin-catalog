@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fullcycle.admin.catalog.ControllerTest;
 import com.fullcycle.admin.catalog.application.genre.create.CreateGenreOutput;
 import com.fullcycle.admin.catalog.application.genre.create.CreateGenreUseCase;
+import com.fullcycle.admin.catalog.application.genre.delete.DeleteGenreUseCase;
 import com.fullcycle.admin.catalog.application.genre.retrieve.get.GenreOutput;
 import com.fullcycle.admin.catalog.application.genre.retrieve.get.GetGenreByIdUseCase;
 import com.fullcycle.admin.catalog.application.genre.update.UpdateGenreOutput;
@@ -28,8 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -51,6 +51,9 @@ class GenreAPITest {
 
     @MockBean
     private UpdateGenreUseCase updateGenreUseCase;
+
+    @MockBean
+    private DeleteGenreUseCase deleteGenreUseCase;
 
     @Test
     void givenAValidCommand_whenCallsCreateGenre_thenReturnGenreId() throws Exception {
@@ -190,5 +193,17 @@ class GenreAPITest {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.errors[0].message", Matchers.equalTo(expectedErrorMessage)));
+    }
+
+    @Test
+    void givenAValidId_whenCallsDeleteGenre_thenReturnOK() throws Exception {
+        doNothing().when(deleteGenreUseCase).execute(any());
+
+        final var request = delete("/genres/{id}", "123")
+                .accept(MediaType.APPLICATION_JSON);
+        mvc.perform(request)
+                .andExpect(status().isNoContent());
+
+        verify(deleteGenreUseCase).execute(eq("123"));
     }
 }
