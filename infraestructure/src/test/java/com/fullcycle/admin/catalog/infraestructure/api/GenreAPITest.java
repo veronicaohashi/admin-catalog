@@ -7,6 +7,8 @@ import com.fullcycle.admin.catalog.application.genre.create.CreateGenreUseCase;
 import com.fullcycle.admin.catalog.application.genre.delete.DeleteGenreUseCase;
 import com.fullcycle.admin.catalog.application.genre.retrieve.get.GenreOutput;
 import com.fullcycle.admin.catalog.application.genre.retrieve.get.GetGenreByIdUseCase;
+import com.fullcycle.admin.catalog.application.genre.retrieve.list.GenreListOutput;
+import com.fullcycle.admin.catalog.application.genre.retrieve.list.ListGenreUseCase;
 import com.fullcycle.admin.catalog.application.genre.update.UpdateGenreOutput;
 import com.fullcycle.admin.catalog.application.genre.update.UpdateGenreUseCase;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
@@ -14,6 +16,7 @@ import com.fullcycle.admin.catalog.domain.exception.NotFoundException;
 import com.fullcycle.admin.catalog.domain.exception.NotificationException;
 import com.fullcycle.admin.catalog.domain.genre.Genre;
 import com.fullcycle.admin.catalog.domain.genre.GenreID;
+import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.validation.Error;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import com.fullcycle.admin.catalog.infraestructure.genre.models.CreateGenreRequest;
@@ -54,6 +57,9 @@ class GenreAPITest {
 
     @MockBean
     private DeleteGenreUseCase deleteGenreUseCase;
+
+    @MockBean
+    private ListGenreUseCase listGenreUseCase;
 
     @Test
     void givenAValidCommand_whenCallsCreateGenre_thenReturnGenreId() throws Exception {
@@ -205,5 +211,47 @@ class GenreAPITest {
                 .andExpect(status().isNoContent());
 
         verify(deleteGenreUseCase).execute(eq("123"));
+    }
+
+    @Test
+    void givenValidParams_whenCallsListGenres_thenReturnGenres() throws Exception {
+        final var genre = Genre.newGenre("Terror", false);
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "";
+        final var expectedSort = "name";
+        final var expectedDirection = "asc";
+        final var expectedItemsCount = 1;
+        final var expectedTotal = 1;
+        final var expectedItems = List.of(GenreListOutput.from(genre));
+        when(listGenreUseCase.execute(any()))
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
+
+        final var request = get("/genres")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .queryParam("page", String.valueOf(expectedPage))
+                .queryParam("perPage", String.valueOf(expectedPerPage))
+                .queryParam("sort", expectedSort)
+                .queryParam("direction", expectedDirection)
+                .queryParam("search", expectedTerms);
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", Matchers.equalTo(expectedPage)))
+                .andExpect(jsonPath("$.per_page", Matchers.equalTo(expectedPerPage)))
+                .andExpect(jsonPath("$.total", Matchers.equalTo(expectedTotal)))
+                .andExpect(jsonPath("$.items[0].id", Matchers.equalTo(genre.getId().getValue())))
+                .andExpect(jsonPath("$.items[0].name", Matchers.equalTo(genre.getName())))
+                .andExpect(jsonPath("$.items[0].is_active", Matchers.equalTo(genre.isActive())))
+                .andExpect(jsonPath("$.items[0].created_at", Matchers.equalTo(genre.getCreatedAt().toString())))
+                .andExpect(jsonPath("$.items[0].deleted_at", Matchers.equalTo(genre.getDeletedAt().toString())));
+
+        verify(listGenreUseCase).execute(argThat(query ->
+                Objects.equals(expectedPage, query.page())
+                        && Objects.equals(expectedPerPage, query.perPage())
+                        && Objects.equals(expectedDirection, query.direction())
+                        && Objects.equals(expectedSort, query.sort())
+                        && Objects.equals(expectedTerms, query.terms())
+        ));
     }
 }
