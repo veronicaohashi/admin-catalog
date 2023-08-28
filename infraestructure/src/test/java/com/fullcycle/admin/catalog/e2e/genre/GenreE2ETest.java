@@ -3,6 +3,7 @@ package com.fullcycle.admin.catalog.e2e.genre;
 import com.fullcycle.admin.catalog.E2ETest;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.e2e.MockDsl;
+import com.fullcycle.admin.catalog.infraestructure.genre.models.UpdateGenreRequest;
 import com.fullcycle.admin.catalog.infraestructure.genre.persistance.GenreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.org.apache.commons.lang3.builder.ToStringExclude;
 
 import java.util.List;
 
@@ -175,5 +175,28 @@ public class GenreE2ETest implements MockDsl {
         this.mvc.perform(request)
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", equalTo("Genre with ID 123 was not found")));
+    }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToUpdateAGenreByItsIdentifier() throws Exception {
+        final var filmes = givenACategory("Filmes", "A categoria mais assistida", true);
+        final var expectedName = "Terror";
+        final var expectedIsActive = true;
+        final var expectedCategories = List.of(filmes);
+        final var genreId = givenAGenre("Ação", false, List.of());
+
+        final var requestBody = new UpdateGenreRequest(expectedName, mapTo(expectedCategories, CategoryID::getValue), expectedIsActive);
+
+        updateAGenre(genreId, requestBody)
+                .andExpect(status().isOk());
+
+        final var genre = genreRepository.findById(genreId.getValue()).get();
+
+        Assertions.assertEquals(expectedName, genre.getName());
+        Assertions.assertEquals(expectedIsActive, genre.isActive());
+        Assertions.assertTrue(expectedCategories.containsAll(genre.getCategoryIDs()));
+        Assertions.assertNotNull(genre.getCreatedAt());
+        Assertions.assertNotNull(genre.getUpdatedAt());
+        Assertions.assertNull(genre.getDeletedAt());
     }
 }

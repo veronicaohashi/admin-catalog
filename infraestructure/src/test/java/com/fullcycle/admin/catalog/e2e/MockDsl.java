@@ -9,6 +9,7 @@ import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategor
 import com.fullcycle.admin.catalog.infraestructure.configuration.json.Json;
 import com.fullcycle.admin.catalog.infraestructure.genre.models.CreateGenreRequest;
 import com.fullcycle.admin.catalog.infraestructure.genre.models.GenreResponse;
+import com.fullcycle.admin.catalog.infraestructure.genre.models.UpdateGenreRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -45,6 +46,10 @@ public interface MockDsl {
 
     default ResultActions updateACategory(final Identifier id, final UpdateCategoryRequest request) throws Exception {
         return this.update("/categories/", id, request);
+    }
+
+    default ResultActions updateAGenre(final Identifier id, final UpdateGenreRequest request) throws Exception {
+        return this.update("/genres/", id, request);
     }
 
     default ResultActions deleteACategory(final Identifier anId) throws Exception {
