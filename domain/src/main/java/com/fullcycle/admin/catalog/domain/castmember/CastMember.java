@@ -50,6 +50,32 @@ public class CastMember extends AggregateRoot<CastMemberID> {
         return this;
     }
 
+    public static CastMember with(
+            final CastMemberID id,
+            final String name,
+            final CastMemberType type,
+            final Instant createdAt,
+            final Instant updatedAt
+    ) {
+        return new CastMember(
+                id,
+                name,
+                type,
+                createdAt,
+                updatedAt
+        );
+    }
+
+    public static CastMember with(final CastMember castMember) {
+        return new CastMember(
+                castMember.id,
+                castMember.name,
+                castMember.type,
+                castMember.createdAt,
+                castMember.updatedAt
+        );
+    }
+
     @Override
     public void validate(ValidationHandler handler) {
         new CastMemberValidator(this, handler).validate();
