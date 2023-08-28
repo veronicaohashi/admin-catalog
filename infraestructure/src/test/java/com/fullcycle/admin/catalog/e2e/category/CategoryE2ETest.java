@@ -1,9 +1,8 @@
 package com.fullcycle.admin.catalog.e2e.category;
 
 import com.fullcycle.admin.catalog.E2ETest;
-import com.fullcycle.admin.catalog.domain.category.CategoryID;
+import com.fullcycle.admin.catalog.e2e.MockDsl;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryResponse;
-import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategoryRequest;
 import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategoryRequest;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
 import com.fullcycle.admin.catalog.infraestructure.configuration.json.Json;
@@ -19,8 +18,6 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.Map;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -29,13 +26,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @E2ETest
 @Testcontainers
-public class CategoryE2ETest {
+public class CategoryE2ETest implements MockDsl {
 
     @Autowired
     private MockMvc mvc;
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Override
+    public MockMvc mvc() {
+        return this.mvc;
+    }
 
     @Container
     private static final MySQLContainer MY_SQL_CONTAINER = new MySQLContainer("mysql:latest")
@@ -230,22 +232,5 @@ public class CategoryE2ETest {
                 .getResponse().getContentAsString();
 
         return Json.readValue(json, CategoryResponse.class);
-    }
-
-    private CategoryID givenACategory(String name, String description, boolean isActive) throws Exception {
-        final var requestBody = new CreateCategoryRequest(name, description, isActive);
-
-        final var request = post("/categories")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(Json.writeValueAsString(requestBody));
-
-        final var response = mvc.perform(request)
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse().getContentAsString();
-
-        var responseId = Json.readValue(response, Map.class).get("id");
-
-        return CategoryID.from((String) responseId);
     }
 }
