@@ -199,4 +199,14 @@ public class GenreE2ETest implements MockDsl {
         Assertions.assertNotNull(genre.getUpdatedAt());
         Assertions.assertNull(genre.getDeletedAt());
     }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToDeleteAGenreByItsIdentifier() throws Exception {
+        final var genreId = givenAGenre("Ação", false, List.of());
+
+        deleteAGenre(genreId)
+                .andExpect(status().isNoContent());
+
+        Assertions.assertFalse(this.genreRepository.existsById(genreId.getValue()));
+    }
 }
