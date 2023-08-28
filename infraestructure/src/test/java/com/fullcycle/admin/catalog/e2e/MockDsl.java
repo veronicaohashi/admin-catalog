@@ -1,19 +1,23 @@
 package com.fullcycle.admin.catalog.e2e;
 
+import com.fullcycle.admin.catalog.domain.Identifier;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.genre.GenreID;
+import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryResponse;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategoryRequest;
+import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategoryRequest;
 import com.fullcycle.admin.catalog.infraestructure.configuration.json.Json;
 import com.fullcycle.admin.catalog.infraestructure.genre.models.CreateGenreRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public interface MockDsl {
@@ -38,6 +42,68 @@ public interface MockDsl {
                 .toList();
     }
 
+    default ResultActions updateACategory(final Identifier id, final UpdateCategoryRequest request) throws Exception {
+        return this.update("/categories/", id, request);
+    }
+
+    default ResultActions deleteACategory(final Identifier anId) throws Exception {
+        return this.delete("/categories/", anId);
+    }
+
+    default ResultActions listCategories(final int page, final int perPage, final String search) throws Exception {
+        return listCategories(page, perPage, search, "", "");
+    }
+
+    default ResultActions listCategories(final int page, final int perPage) throws Exception {
+        return listCategories(page, perPage, "", "", "");
+    }
+
+    default ResultActions listCategories(
+            final int page,
+            final int perPage,
+            final String search,
+            final String sort,
+            final String direction
+    ) throws Exception {
+        return this.list("/categories", page, perPage, search, sort, direction);
+    }
+
+    default CategoryResponse retrieveACategory(final Identifier id) throws Exception {
+        return retrieve("/categories/", id, CategoryResponse.class);
+    }
+
+    private <T> T retrieve(final String url, final Identifier id, final Class<T> clazz) throws Exception {
+        final var request = get(url + id.getValue())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        final var json = mvc().perform(request)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse().getContentAsString();
+
+        return Json.readValue(json, clazz);
+    }
+
+    private ResultActions list(
+            final String url,
+            final int page,
+            final int perPage,
+            final String search,
+            final String sort,
+            final String direction
+    ) throws Exception {
+        final var request = get(url)
+                .queryParam("page", String.valueOf(page))
+                .queryParam("perPage", String.valueOf(perPage))
+                .queryParam("sort", sort)
+                .queryParam("dir", direction)
+                .queryParam("search", search)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        return mvc().perform(request);
+    }
+
     private String given(final String url, final Object requestBody) throws Exception {
         final var request = post(url)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -51,5 +117,19 @@ public interface MockDsl {
         var responseId = Json.readValue(response, Map.class).get("id");
 
         return (String) responseId;
+    }
+
+    private ResultActions delete(final String url, final Identifier id) throws Exception {
+        final var request = MockMvcRequestBuilders.delete(url + id.getValue())
+                .contentType(MediaType.APPLICATION_JSON);
+        return mvc().perform(request);
+    }
+
+    private ResultActions update(final String url, final Identifier id, final Object requestBody) throws Exception {
+        final var aRequest = put(url + id.getValue())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Json.writeValueAsString(requestBody));
+
+        return this.mvc().perform(aRequest);
     }
 }

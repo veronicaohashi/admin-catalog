@@ -2,10 +2,8 @@ package com.fullcycle.admin.catalog.e2e.category;
 
 import com.fullcycle.admin.catalog.E2ETest;
 import com.fullcycle.admin.catalog.e2e.MockDsl;
-import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryResponse;
 import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategoryRequest;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
-import com.fullcycle.admin.catalog.infraestructure.configuration.json.Json;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +11,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -134,7 +131,7 @@ public class CategoryE2ETest implements MockDsl {
         Assertions.assertEquals(0, categoryRepository.count());
         final var categoryId = givenACategory(expectedName, expectedDescription, expectedIsActive);
 
-        final var category = retrieveACategory(categoryId.getValue());
+        final var category = retrieveACategory(categoryId);
 
         Assertions.assertEquals(expectedName, category.name());
         Assertions.assertEquals(expectedDescription, category.description());
@@ -164,11 +161,7 @@ public class CategoryE2ETest implements MockDsl {
 
         final var requestBody = new UpdateCategoryRequest(expectedName, expectedDescription, expectedIsActive);
 
-        final var request = put("/categories/" + categoryId.getValue())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(Json.writeValueAsString(requestBody));
-
-        mvc.perform(request)
+        updateACategory(categoryId, requestBody)
                 .andExpect(status().isOk());
 
         final var category = categoryRepository.findById(categoryId.getValue()).get();
@@ -186,51 +179,9 @@ public class CategoryE2ETest implements MockDsl {
     void asACatalogAdminIShouldBeAbleToDeleteACategoryByItsIdentifier() throws Exception {
         final var categoryId = givenACategory("Filmes", "A categoria mais assistida", true);
 
-        final var request = delete("/categories/" + categoryId.getValue())
-                .contentType(MediaType.APPLICATION_JSON);
-
-        mvc.perform(request)
+        deleteACategory(categoryId)
                 .andExpect(status().isNoContent());
 
         Assertions.assertFalse(this.categoryRepository.existsById(categoryId.getValue()));
-    }
-
-    private ResultActions listCategories(final int page, final int perPage, final String search) throws Exception {
-        return listCategories(page, perPage, search, "", "");
-    }
-
-    private ResultActions listCategories(final int page, final int perPage) throws Exception {
-        return listCategories(page, perPage, "", "", "");
-    }
-
-    private ResultActions listCategories(
-            final int page,
-            final int perPage,
-            final String search,
-            final String sort,
-            final String direction
-    ) throws Exception {
-        final var request = get("/categories")
-                .queryParam("page", String.valueOf(page))
-                .queryParam("perPage", String.valueOf(perPage))
-                .queryParam("sort", sort)
-                .queryParam("dir", direction)
-                .queryParam("search", search)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
-        return mvc.perform(request);
-    }
-
-    private CategoryResponse retrieveACategory(String id) throws Exception {
-        final var request = get("/categories/" + id)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
-
-        final var json = mvc.perform(request)
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
-
-        return Json.readValue(json, CategoryResponse.class);
     }
 }
