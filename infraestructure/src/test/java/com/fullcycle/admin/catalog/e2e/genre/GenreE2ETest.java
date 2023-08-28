@@ -7,17 +7,20 @@ import com.fullcycle.admin.catalog.infraestructure.genre.persistance.GenreReposi
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.org.apache.commons.lang3.builder.ToStringExclude;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -142,5 +145,35 @@ public class GenreE2ETest implements MockDsl {
                 .andExpect(jsonPath("$.items[0].name", equalTo("Esportes")))
                 .andExpect(jsonPath("$.items[1].name", equalTo("Drama")))
                 .andExpect(jsonPath("$.items[2].name", equalTo("Ação")));
+    }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToGetAGenreByItsIdentifier() throws Exception {
+        final var filmes = givenACategory("Filmes", null, true);
+        final var expectedName = "Ação";
+        final var expectedIsActive = true;
+        final var expectedCategories = List.of(filmes);
+
+        final var genreId = givenAGenre(expectedName, expectedIsActive, expectedCategories);
+
+        final var genre = retrieveAGenre(genreId);
+
+        Assertions.assertEquals(expectedName, genre.name());
+        Assertions.assertEquals(expectedIsActive, genre.active());
+        Assertions.assertTrue(mapTo(expectedCategories, CategoryID::getValue).containsAll(genre.categories()));
+        Assertions.assertNotNull(genre.createdAt());
+        Assertions.assertNotNull(genre.updatedAt());
+        Assertions.assertNull(genre.deletedAt());
+    }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToSeeATreatedErrorByGettingANotFoundCategory() throws Exception {
+        final var request = get("/genres/123")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        this.mvc.perform(request)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", equalTo("Genre with ID 123 was not found")));
     }
 }

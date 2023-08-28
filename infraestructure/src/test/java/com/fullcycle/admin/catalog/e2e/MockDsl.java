@@ -8,6 +8,7 @@ import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategor
 import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategoryRequest;
 import com.fullcycle.admin.catalog.infraestructure.configuration.json.Json;
 import com.fullcycle.admin.catalog.infraestructure.genre.models.CreateGenreRequest;
+import com.fullcycle.admin.catalog.infraestructure.genre.models.GenreResponse;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -78,10 +79,14 @@ public interface MockDsl {
         return retrieve("/categories/", id, CategoryResponse.class);
     }
 
+    default GenreResponse retrieveAGenre(final Identifier id) throws Exception {
+        return retrieve("/genres/", id, GenreResponse.class);
+    }
+
     private <T> T retrieve(final String url, final Identifier id, final Class<T> clazz) throws Exception {
         final var request = get(url + id.getValue())
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8);
 
         final var json = mvc().perform(request)
                 .andExpect(status().isOk())
