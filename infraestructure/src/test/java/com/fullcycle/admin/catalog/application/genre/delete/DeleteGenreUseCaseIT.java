@@ -4,7 +4,7 @@ import com.fullcycle.admin.catalog.IntegrationTest;
 import com.fullcycle.admin.catalog.domain.genre.Genre;
 import com.fullcycle.admin.catalog.domain.genre.GenreGateway;
 import com.fullcycle.admin.catalog.domain.genre.GenreID;
-import com.fullcycle.admin.catalog.infraestructure.genre.persistance.GenreRepository;
+import com.fullcycle.admin.catalog.infraestructure.genre.persistence.GenreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

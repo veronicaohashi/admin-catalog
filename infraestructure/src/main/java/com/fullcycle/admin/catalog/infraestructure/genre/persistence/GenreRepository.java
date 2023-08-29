@@ -1,4 +1,4 @@
-package com.fullcycle.admin.catalog.infraestructure.genre.persistance;
+package com.fullcycle.admin.catalog.infraestructure.genre.persistence;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

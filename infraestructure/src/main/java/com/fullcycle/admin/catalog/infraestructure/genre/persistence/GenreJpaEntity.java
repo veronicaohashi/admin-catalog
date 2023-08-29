@@ -1,4 +1,4 @@
-package com.fullcycle.admin.catalog.infraestructure.genre.persistance;
+package com.fullcycle.admin.catalog.infraestructure.genre.persistence;
 
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.genre.Genre;

@@ -3,10 +3,9 @@ package com.fullcycle.admin.catalog.application.genre.retrieve.list;
 import com.fullcycle.admin.catalog.IntegrationTest;
 import com.fullcycle.admin.catalog.domain.genre.Genre;
 import com.fullcycle.admin.catalog.domain.genre.GenreGateway;
-import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
-import com.fullcycle.admin.catalog.infraestructure.genre.persistance.GenreJpaEntity;
-import com.fullcycle.admin.catalog.infraestructure.genre.persistance.GenreRepository;
+import com.fullcycle.admin.catalog.infraestructure.genre.persistence.GenreJpaEntity;
+import com.fullcycle.admin.catalog.infraestructure.genre.persistence.GenreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @IntegrationTest
 class ListGenreUseCaseIT {

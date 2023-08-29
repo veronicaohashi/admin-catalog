@@ -1,4 +1,4 @@
-package com.fullcycle.admin.catalog.infraestructure.genre.persistance;
+package com.fullcycle.admin.catalog.infraestructure.genre.persistence;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

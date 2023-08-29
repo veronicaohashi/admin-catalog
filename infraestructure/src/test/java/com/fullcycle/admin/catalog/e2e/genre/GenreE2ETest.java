@@ -4,7 +4,7 @@ import com.fullcycle.admin.catalog.E2ETest;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.e2e.MockDsl;
 import com.fullcycle.admin.catalog.infraestructure.genre.models.UpdateGenreRequest;
-import com.fullcycle.admin.catalog.infraestructure.genre.persistance.GenreRepository;
+import com.fullcycle.admin.catalog.infraestructure.genre.persistence.GenreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

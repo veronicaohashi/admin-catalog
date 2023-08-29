@@ -6,7 +6,7 @@ import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exception.NotificationException;
 import com.fullcycle.admin.catalog.domain.genre.GenreGateway;
-import com.fullcycle.admin.catalog.infraestructure.genre.persistance.GenreRepository;
+import com.fullcycle.admin.catalog.infraestructure.genre.persistence.GenreRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

@@ -1,10 +1,9 @@
 package com.fullcycle.admin.catalog;
 
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
-import com.fullcycle.admin.catalog.infraestructure.genre.persistance.GenreRepository;
+import com.fullcycle.admin.catalog.infraestructure.genre.persistence.GenreRepository;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
