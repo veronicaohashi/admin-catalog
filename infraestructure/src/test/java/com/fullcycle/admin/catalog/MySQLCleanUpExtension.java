@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalog;
 
+import com.fullcycle.admin.catalog.infraestructure.castmember.persistence.CastMemberRepository;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
 import com.fullcycle.admin.catalog.infraestructure.genre.persistence.GenreRepository;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -17,6 +18,7 @@ public class MySQLCleanUpExtension implements BeforeEachCallback {
         final var applicationContext = SpringExtension.getApplicationContext(context);
 
         cleanUp(List.of(
+                applicationContext.getBean(CastMemberRepository.class),
                 applicationContext.getBean(GenreRepository.class),
                 applicationContext.getBean(CategoryRepository.class)
         ));
