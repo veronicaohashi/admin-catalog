@@ -15,7 +15,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class DefaultDeleteCastMemberUseCaseTest extends UseCaseTest {
+class DeleteCastMemberUseCaseTest extends UseCaseTest {
 
     @Mock
     private CastMemberGateway castMemberGateway;
