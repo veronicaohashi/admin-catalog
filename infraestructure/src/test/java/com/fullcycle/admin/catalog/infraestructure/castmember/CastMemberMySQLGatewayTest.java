@@ -87,4 +87,28 @@ class CastMemberMySQLGatewayTest {
 
         Assertions.assertEquals(0, castMemberRepository.count());
     }
+
+    @Test
+    void givenAValidCastMember_whenCallsFindById_thenReturnIt() {
+        final var expectedName = Fixture.name();
+        final var expectedType = Fixture.CastMember.type();
+        final var member = CastMember.newMember(expectedName, expectedType);
+        final var expectedId = member.getId();
+        castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(member));
+
+        final var response = castMemberMySQLGateway.findById(expectedId).get();
+
+        Assertions.assertEquals(expectedId, response.getId());
+        Assertions.assertEquals(expectedName, response.getName());
+        Assertions.assertEquals(expectedType, response.getType());
+        Assertions.assertEquals(member.getCreatedAt(), response.getCreatedAt());
+        Assertions.assertEquals(member.getUpdatedAt(), response.getUpdatedAt());
+    }
+
+    @Test
+    void givenAnInvalidId_whenCallsFindById_thenReturnEmpty() {
+        final var response = castMemberMySQLGateway.findById(CastMemberID.from("123"));
+
+        Assertions.assertTrue(response.isEmpty());
+    }
 }
