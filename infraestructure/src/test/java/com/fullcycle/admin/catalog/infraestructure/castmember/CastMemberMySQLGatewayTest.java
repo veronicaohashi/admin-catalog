@@ -3,6 +3,7 @@ package com.fullcycle.admin.catalog.infraestructure.castmember;
 import com.fullcycle.admin.catalog.Fixture;
 import com.fullcycle.admin.catalog.MySQLGatewayTest;
 import com.fullcycle.admin.catalog.domain.castmember.CastMember;
+import com.fullcycle.admin.catalog.domain.castmember.CastMemberID;
 import com.fullcycle.admin.catalog.infraestructure.castmember.persistence.CastMemberJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.castmember.persistence.CastMemberRepository;
 import org.junit.jupiter.api.Assertions;
@@ -67,5 +68,23 @@ class CastMemberMySQLGatewayTest {
         Assertions.assertEquals(expectedType, persistedMember.getType());
         Assertions.assertEquals(member.getCreatedAt(), persistedMember.getCreatedAt());
         Assertions.assertTrue(member.getUpdatedAt().isBefore(response.getUpdatedAt()));
+    }
+
+    @Test
+    void givenAValidCastMember_whenCallsDeleteById_shouldDeleteIt() {
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var expectedId = member.getId();
+        castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(member));
+
+        castMemberMySQLGateway.deleteById(expectedId);
+
+        Assertions.assertEquals(0, castMemberRepository.count());
+    }
+
+    @Test
+    void givenAnInvalidId_whenCallsDeleteById_thenBeIgnored() {
+        castMemberMySQLGateway.deleteById(CastMemberID.from("123"));
+
+        Assertions.assertEquals(0, castMemberRepository.count());
     }
 }
