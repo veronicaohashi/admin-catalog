@@ -7,10 +7,17 @@ import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.infraestructure.castmember.persistence.CastMemberJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.castmember.persistence.CastMemberRepository;
+import com.fullcycle.admin.catalog.infraestructure.genre.persistence.GenreJpaEntity;
+import com.fullcycle.admin.catalog.infraestructure.utils.SpecificationUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.Optional;
+
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @Component
 public class CastMemberMySQLGateway implements CastMemberGateway {
@@ -46,8 +53,30 @@ public class CastMemberMySQLGateway implements CastMemberGateway {
     }
 
     @Override
-    public Pagination<CastMember> findAll(SearchQuery searchQuery) {
-        return null;
+    public Pagination<CastMember> findAll(final SearchQuery query) {
+        final var page = PageRequest.of(
+                query.page(),
+                query.perPage(),
+                Sort.by(Sort.Direction.fromString(query.direction()), query.sort())
+        );
+
+        final var where = Optional.ofNullable(query.terms())
+                .filter(str -> !str.isBlank())
+                .map(this::assembleSpecification)
+                .orElse(null);
+
+        final var pageResult = castMemberRepository.findAll(where(where), page);
+
+        return new Pagination<>(
+                pageResult.getNumber(),
+                pageResult.getSize(),
+                pageResult.getTotalElements(),
+                pageResult.map(CastMemberJpaEntity::toAggregate).toList()
+        );
+    }
+
+    private Specification<CastMemberJpaEntity> assembleSpecification(final String terms) {
+        return SpecificationUtils.like("name", terms);
     }
 
     private CastMember save(CastMember castMember) {
