@@ -5,6 +5,7 @@ import com.fullcycle.admin.catalog.ControllerTest;
 import com.fullcycle.admin.catalog.Fixture;
 import com.fullcycle.admin.catalog.application.castmember.create.CreateCastMemberOutput;
 import com.fullcycle.admin.catalog.application.castmember.create.DefaultCreateCastMemberUseCase;
+import com.fullcycle.admin.catalog.application.castmember.delete.DefaultDeleteCastMemberUseCase;
 import com.fullcycle.admin.catalog.application.castmember.retrieve.get.CastMemberOutput;
 import com.fullcycle.admin.catalog.application.castmember.retrieve.get.DefaultGetCastMemberByIdUseCase;
 import com.fullcycle.admin.catalog.application.castmember.update.DefaultUpdateCastMemberUseCase;
@@ -29,8 +30,7 @@ import java.util.Objects;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -51,6 +51,9 @@ class CastMemberAPITest {
 
     @MockBean
     private DefaultUpdateCastMemberUseCase updateCastMemberUseCase;
+
+    @MockBean
+    private DefaultDeleteCastMemberUseCase deleteCastMemberUseCase;
 
     @Test
     void givenAValidCommand_whenCallsCreateCastMember_thenReturnItsIdentifier() throws Exception {
@@ -210,5 +213,20 @@ class CastMemberAPITest {
                 Objects.equals(input.name(), cmd.name()) &&
                 Objects.equals(input.type(), cmd.type())
         ));
+    }
+
+    @Test
+    void givenAValidId_whenCallsDeleteById_thenDeleteIt() throws Exception {
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var expectedId = member.getId().getValue();
+        doNothing().when(deleteCastMemberUseCase).execute(expectedId);
+
+        final var request = delete("/cast_members/{id}", expectedId)
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(status().isNoContent());
+
+        verify(deleteCastMemberUseCase).execute(eq(expectedId));
     }
 }

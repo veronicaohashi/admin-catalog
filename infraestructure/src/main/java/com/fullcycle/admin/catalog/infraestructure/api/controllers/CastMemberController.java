@@ -2,6 +2,7 @@ package com.fullcycle.admin.catalog.infraestructure.api.controllers;
 
 import com.fullcycle.admin.catalog.application.castmember.create.CreateCastMemberCommand;
 import com.fullcycle.admin.catalog.application.castmember.create.CreateCastMemberUseCase;
+import com.fullcycle.admin.catalog.application.castmember.delete.DeleteCastMemberUseCase;
 import com.fullcycle.admin.catalog.application.castmember.retrieve.get.GetCastMemberByIdUseCase;
 import com.fullcycle.admin.catalog.application.castmember.update.UpdateCastMemberCommand;
 import com.fullcycle.admin.catalog.application.castmember.update.UpdateCastMemberUseCase;
@@ -22,15 +23,18 @@ public class CastMemberController implements CastMemberAPI {
     private final CreateCastMemberUseCase createCastMemberUseCase;
     private final GetCastMemberByIdUseCase getCastMemberByIdUseCase;
     private final UpdateCastMemberUseCase updateCastMemberUseCase;
+    private final DeleteCastMemberUseCase deleteCastMemberUseCase;
 
     public CastMemberController(
             final CreateCastMemberUseCase createCastMemberUseCase,
             final GetCastMemberByIdUseCase getCastMemberByIdUseCase,
-            final UpdateCastMemberUseCase updateCastMemberUseCase
+            final UpdateCastMemberUseCase updateCastMemberUseCase,
+            final DeleteCastMemberUseCase deleteCastMemberUseCase
     ) {
         this.createCastMemberUseCase = Objects.requireNonNull(createCastMemberUseCase);
         this.getCastMemberByIdUseCase = Objects.requireNonNull(getCastMemberByIdUseCase);
         this.updateCastMemberUseCase = Objects.requireNonNull(updateCastMemberUseCase);
+        this.deleteCastMemberUseCase = Objects.requireNonNull(deleteCastMemberUseCase);
     }
 
     @Override
@@ -52,5 +56,10 @@ public class CastMemberController implements CastMemberAPI {
     public ResponseEntity<?> update(final String id, final UpdateCastMemberRequest input) {
         final var command = UpdateCastMemberCommand.with(id, input.name(), input.type());
         return ResponseEntity.ok(updateCastMemberUseCase.execute(command));
+    }
+
+    @Override
+    public void delete(final String id) {
+        deleteCastMemberUseCase.execute(id);
     }
 }
