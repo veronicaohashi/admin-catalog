@@ -8,7 +8,7 @@ public record CastMemberResponse(
         String id,
         String name,
         String type,
-        @JsonProperty("created_at") Instant createdAt,
-        @JsonProperty("updated_at") Instant updatedAt
+        @JsonProperty("created_at") String createdAt,
+        @JsonProperty("updated_at") String updatedAt
 ) {
 }

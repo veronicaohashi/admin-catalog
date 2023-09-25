@@ -11,8 +11,8 @@ public interface CastMemberApiPresenter {
                 output.id(),
                 output.name(),
                 output.type().name(),
-                output.createdAt(),
-                output.updatedAt()
+                output.createdAt().toString(),
+                output.updatedAt().toString()
         );
     }
 
