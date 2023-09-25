@@ -6,7 +6,7 @@ import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 
 import java.util.Objects;
 
-public final class DefaultListCastMembersUseCase extends ListCastMembersUseCase {
+public non-sealed class DefaultListCastMembersUseCase extends ListCastMembersUseCase {
 
     private final CastMemberGateway castMemberGateway;
 
@@ -15,7 +15,7 @@ public final class DefaultListCastMembersUseCase extends ListCastMembersUseCase 
     }
 
     @Override
-    public Pagination<CastMemberListOutput> execute(SearchQuery searchQuery) {
+    public Pagination<CastMemberListOutput> execute(final SearchQuery searchQuery) {
         return castMemberGateway.findAll(searchQuery)
                 .map(CastMemberListOutput::from);
     }
