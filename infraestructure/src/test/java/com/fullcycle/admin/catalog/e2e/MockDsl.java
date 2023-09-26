@@ -1,8 +1,11 @@
 package com.fullcycle.admin.catalog.e2e;
 
 import com.fullcycle.admin.catalog.domain.Identifier;
+import com.fullcycle.admin.catalog.domain.castmember.CastMemberID;
+import com.fullcycle.admin.catalog.domain.castmember.CastMemberType;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.genre.GenreID;
+import com.fullcycle.admin.catalog.infraestructure.castmember.models.CreateCastMemberRequest;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CategoryResponse;
 import com.fullcycle.admin.catalog.infraestructure.category.models.CreateCategoryRequest;
 import com.fullcycle.admin.catalog.infraestructure.category.models.UpdateCategoryRequest;
@@ -36,6 +39,12 @@ public interface MockDsl {
         final var requestBody = new CreateGenreRequest(name, mapTo(categoryIDS, CategoryID::getValue), isActive);
         var responseId = given("/genres", requestBody);
         return GenreID.from(responseId);
+    }
+
+    default CastMemberID givenACastMember(final String name, final CastMemberType type) throws Exception {
+        final var requestBody = new CreateCastMemberRequest(name, type);
+        var responseId = given("/cast_members", requestBody);
+        return CastMemberID.from(responseId);
     }
 
     default <A, D> List<D> mapTo(final List<A> actual, final Function<A, D> mapper) {
