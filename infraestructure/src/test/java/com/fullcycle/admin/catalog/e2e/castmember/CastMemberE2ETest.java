@@ -2,6 +2,7 @@ package com.fullcycle.admin.catalog.e2e.castmember;
 
 import com.fullcycle.admin.catalog.E2ETest;
 import com.fullcycle.admin.catalog.Fixture;
+import com.fullcycle.admin.catalog.domain.castmember.CastMemberID;
 import com.fullcycle.admin.catalog.e2e.MockDsl;
 import com.fullcycle.admin.catalog.infraestructure.castmember.persistence.CastMemberRepository;
 import org.hamcrest.Matchers;
@@ -138,5 +139,28 @@ class CastMemberE2ETest implements MockDsl {
                 .andExpect(jsonPath("$.total", Matchers.equalTo(3)))
                 .andExpect(jsonPath("$.items", Matchers.hasSize(1)))
                 .andExpect(jsonPath("$.items[0].name", Matchers.equalTo("Vin Diesel")));
+    }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToGetACastMemberByItsIdentifier() throws Exception {
+        final var expectedName = Fixture.name();
+        final var expectedType = Fixture.CastMember.type();
+        final var expectedId = givenACastMember(expectedName, expectedType);
+
+        final var castMember = retrieveACastMember(expectedId);
+
+        Assertions.assertEquals(expectedName, castMember.name());
+        Assertions.assertEquals(expectedType.name(), castMember.type());
+        Assertions.assertNotNull(castMember.createdAt());
+        Assertions.assertNotNull(castMember.updatedAt());
+    }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToSeeATreatedErrorByGettingANotFoundCastMember() throws Exception {
+        final var expectedErrorMessage = "CastMember with ID 123 was not found";
+
+        retrieveACastMemberResult(CastMemberID.from("123"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", Matchers.equalTo(expectedErrorMessage)));
     }
 }
