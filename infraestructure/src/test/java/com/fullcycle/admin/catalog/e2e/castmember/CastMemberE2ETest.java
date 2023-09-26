@@ -163,4 +163,32 @@ class CastMemberE2ETest implements MockDsl {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", Matchers.equalTo(expectedErrorMessage)));
     }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToUpdateACastMemberByItsIdentifier() throws Exception {
+        final var expectedName = Fixture.name();
+        final var expectedType = Fixture.CastMember.type();
+        final var expectedId = givenACastMember(Fixture.name(), Fixture.CastMember.type());
+
+        updateACastMember(expectedId, expectedName, expectedType)
+                .andExpect(status().isOk());
+
+        final var castMember = retrieveACastMember(expectedId);
+
+        Assertions.assertEquals(expectedName, castMember.name());
+        Assertions.assertEquals(expectedType.name(), castMember.type());
+        Assertions.assertNotNull(castMember.createdAt());
+        Assertions.assertNotNull(castMember.updatedAt());
+    }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToSeeATreatedErrorByUpdatingACastMemberWithInvalidValue() throws Exception {
+        final var expectedErrorMessage = "'name' should not be empty";
+        final var expectedId = givenACastMember(Fixture.name(), Fixture.CastMember.type());
+
+        updateACastMember(expectedId, "", Fixture.CastMember.type())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0].message", Matchers.equalTo(expectedErrorMessage)));
+
+    }
 }
