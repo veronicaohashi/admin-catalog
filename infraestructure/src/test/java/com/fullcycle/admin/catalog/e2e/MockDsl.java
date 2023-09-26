@@ -81,6 +81,10 @@ public interface MockDsl {
         return this.delete("/categories/", id);
     }
 
+    default ResultActions deleteACastMember(final CastMemberID id) throws Exception {
+        return this.delete("/cast_members/", id);
+    }
+
     default ResultActions listCategories(final int page, final int perPage, final String search) throws Exception {
         return listCategories(page, perPage, search, "", "");
     }

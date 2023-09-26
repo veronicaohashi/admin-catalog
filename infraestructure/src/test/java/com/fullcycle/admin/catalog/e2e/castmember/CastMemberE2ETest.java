@@ -179,6 +179,7 @@ class CastMemberE2ETest implements MockDsl {
         Assertions.assertEquals(expectedType.name(), castMember.type());
         Assertions.assertNotNull(castMember.createdAt());
         Assertions.assertNotNull(castMember.updatedAt());
+        Assertions.assertNotEquals(castMember.createdAt(), castMember.updatedAt());
     }
 
     @Test
@@ -189,6 +190,23 @@ class CastMemberE2ETest implements MockDsl {
         updateACastMember(expectedId, "", Fixture.CastMember.type())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.errors[0].message", Matchers.equalTo(expectedErrorMessage)));
+    }
 
+    @Test
+    void asACatalogAdminIShouldBeAbleToDeleteACastMemberByItsIdentifier() throws Exception {
+        final var expectedId = givenACastMember(Fixture.name(), Fixture.CastMember.type());
+
+        deleteACastMember(expectedId)
+                .andExpect(status().isNoContent());
+
+        Assertions.assertEquals(0, castMemberRepository.count());
+    }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToDeleteACastMemberWithInvalidIdentifier() throws Exception {
+        deleteACastMember(CastMemberID.from("123"))
+                .andExpect(status().isNoContent());
+
+        Assertions.assertEquals(0, castMemberRepository.count());
     }
 }
