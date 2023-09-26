@@ -12,16 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.hamcrest.Matchers.nullValue;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.testcontainers.shaded.org.hamcrest.Matchers.equalTo;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @E2ETest
 @Testcontainers
@@ -74,5 +70,73 @@ class CastMemberE2ETest implements MockDsl {
                 .andExpect(header().string("Location", nullValue()))
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.errors[0].message", Matchers.equalTo(expectedErrorMessage)));
+    }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToNavigateThruAllMembers() throws Exception {
+        givenACastMember("Vin Diesel", Fixture.CastMember.type());
+        givenACastMember("Quentin Tarantino", Fixture.CastMember.type());
+        givenACastMember("Jason Momoa", Fixture.CastMember.type());
+
+        listCastMembers(0, 1)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", Matchers.equalTo(0)))
+                .andExpect(jsonPath("$.per_page", Matchers.equalTo(1)))
+                .andExpect(jsonPath("$.total", Matchers.equalTo(3)))
+                .andExpect(jsonPath("$.items", Matchers.hasSize(1)))
+                .andExpect(jsonPath("$.items[0].name", Matchers.equalTo("Jason Momoa")));
+
+        listCastMembers(1, 1)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", Matchers.equalTo(1)))
+                .andExpect(jsonPath("$.per_page", Matchers.equalTo(1)))
+                .andExpect(jsonPath("$.total", Matchers.equalTo(3)))
+                .andExpect(jsonPath("$.items", Matchers.hasSize(1)))
+                .andExpect(jsonPath("$.items[0].name", Matchers.equalTo("Quentin Tarantino")));
+
+        listCastMembers(2, 1)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", Matchers.equalTo(2)))
+                .andExpect(jsonPath("$.per_page", Matchers.equalTo(1)))
+                .andExpect(jsonPath("$.total", Matchers.equalTo(3)))
+                .andExpect(jsonPath("$.items", Matchers.hasSize(1)))
+                .andExpect(jsonPath("$.items[0].name", Matchers.equalTo("Vin Diesel")));
+
+        listCastMembers(3, 1)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", Matchers.equalTo(3)))
+                .andExpect(jsonPath("$.per_page", Matchers.equalTo(1)))
+                .andExpect(jsonPath("$.total", Matchers.equalTo(3)))
+                .andExpect(jsonPath("$.items", Matchers.hasSize(0)));
+    }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToSearchThruAllMembers() throws Exception {
+        givenACastMember("Vin Diesel", Fixture.CastMember.type());
+        givenACastMember("Quentin Tarantino", Fixture.CastMember.type());
+        givenACastMember("Jason Momoa", Fixture.CastMember.type());
+
+        listCastMembers(0, 1, "vin")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", Matchers.equalTo(0)))
+                .andExpect(jsonPath("$.per_page", Matchers.equalTo(1)))
+                .andExpect(jsonPath("$.total", Matchers.equalTo(1)))
+                .andExpect(jsonPath("$.items", Matchers.hasSize(1)))
+                .andExpect(jsonPath("$.items[0].name", Matchers.equalTo("Vin Diesel")));
+    }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToSortAllMembersByNameDesc() throws Exception {
+        givenACastMember("Vin Diesel", Fixture.CastMember.type());
+        givenACastMember("Quentin Tarantino", Fixture.CastMember.type());
+        givenACastMember("Jason Momoa", Fixture.CastMember.type());
+
+        listCastMembers(0, 1, "", "name", "desc")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", Matchers.equalTo(0)))
+                .andExpect(jsonPath("$.per_page", Matchers.equalTo(1)))
+                .andExpect(jsonPath("$.total", Matchers.equalTo(3)))
+                .andExpect(jsonPath("$.items", Matchers.hasSize(1)))
+                .andExpect(jsonPath("$.items[0].name", Matchers.equalTo("Vin Diesel")));
     }
 }

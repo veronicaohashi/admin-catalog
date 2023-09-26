@@ -98,6 +98,17 @@ public interface MockDsl {
         return this.list("/genres", page, perPage, search, sort, direction);
     }
 
+    default ResultActions listCastMembers(final int page, final int perPage, final String search) throws Exception {
+        return listCastMembers(page, perPage, search, "", "");
+    }
+
+    default ResultActions listCastMembers(final int page, final int perPage) throws Exception {
+        return listCastMembers(page, perPage, "", "", "");
+    }
+
+    default ResultActions listCastMembers(final int page, final int perPage, final String search, final String sort, final String direction) throws Exception {
+        return this.list("/cast_members", page, perPage, search, sort, direction);
+    }
     default CategoryResponse retrieveACategory(final Identifier id) throws Exception {
         return retrieve("/categories/", id, CategoryResponse.class);
     }
