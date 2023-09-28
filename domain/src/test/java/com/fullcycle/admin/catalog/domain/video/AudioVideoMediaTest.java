@@ -31,11 +31,12 @@ class AudioVideoMediaTest {
     @Test
     void givenTwoVideosWithSameChecksumAndLocation_whenCallsEquals_thenReturnTrue() {
         final var expectedChecksum = "abc";
+        final var expectedLocation = "/videos";
 
         final var video1 = AudioVideoMedia.with(
                 expectedChecksum,
                 "Video1.mp4",
-                "/videos",
+                expectedLocation,
                 "/videos/encoded",
                 MediaStatus.COMPLETED
         );
@@ -43,7 +44,7 @@ class AudioVideoMediaTest {
         final var video2 = AudioVideoMedia.with(
                 expectedChecksum,
                 "Video2.mp4",
-                "/videos",
+                expectedLocation,
                 "/videos/encoded",
                 MediaStatus.COMPLETED
         );
