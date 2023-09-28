@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-class UpdateCastMemberUseCaseTest extends UseCaseTest {
+class UpdateCastMembersUseCaseTest extends UseCaseTest {
 
     @Mock
     private CastMemberGateway castMemberGateway;
@@ -36,9 +36,9 @@ class UpdateCastMemberUseCaseTest extends UseCaseTest {
 
     @Test
     void givenAValidCommand_whenCallsUpdateCastMember_thenReturnItsIdentifier() {
-        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
         final var expectedId = member.getId();
         final var command = UpdateCastMemberCommand.with(expectedId.getValue(), expectedName, expectedType);
         Mockito.when(castMemberGateway.findById(any()))
@@ -60,10 +60,10 @@ class UpdateCastMemberUseCaseTest extends UseCaseTest {
 
     @Test
     void givenAInvalidName_whenCallsUpdateCastMember_thenThrowsNotificationException() {
-        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
         final var id = member.getId();
         final var expectedErrorMessage = "'name' should not be null";
-        final var command = UpdateCastMemberCommand.with(id.getValue(), null, Fixture.CastMember.type());
+        final var command = UpdateCastMemberCommand.with(id.getValue(), null, Fixture.CastMembers.type());
         Mockito.when(castMemberGateway.findById(any()))
                 .thenReturn(Optional.of(CastMember.with(member)));
 
@@ -79,7 +79,7 @@ class UpdateCastMemberUseCaseTest extends UseCaseTest {
 
     @Test
     void givenAInvalidType_whenCallsUpdateCastMember_thenThrowsNotificationException() {
-        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
         final var id = member.getId();
         final var expectedErrorMessage = "'type' should not be null";
         final var command = UpdateCastMemberCommand.with(id.getValue(), Fixture.name(), null);

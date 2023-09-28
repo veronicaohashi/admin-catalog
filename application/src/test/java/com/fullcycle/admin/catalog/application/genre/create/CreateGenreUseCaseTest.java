@@ -149,10 +149,4 @@ class CreateGenreUseCaseTest extends UseCaseTest {
         verify(genreGateway, times(0)).create(any());
         verify(categoryGateway, times(1)).existsByIds(any());
     }
-
-    private List<String> asString(final List<CategoryID> categories) {
-        return categories.stream()
-                .map(CategoryID::getValue)
-                .toList();
-    }
 }

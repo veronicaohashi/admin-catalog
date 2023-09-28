@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
-class CreateCastMemberUseCaseTest extends UseCaseTest {
+class CreateCastMembersUseCaseTest extends UseCaseTest {
 
     @Mock
     private CastMemberGateway castMemberGateway;
@@ -33,7 +33,7 @@ class CreateCastMemberUseCaseTest extends UseCaseTest {
     @Test
     void givenAValidCommand_whenCallsCreateCastMember_thenReturnIt() {
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
         final var command = CreateCastMemberCommand.with(expectedName, expectedType);
         when(castMemberGateway.create(any()))
                 .thenAnswer(returnsFirstArg());
@@ -54,7 +54,7 @@ class CreateCastMemberUseCaseTest extends UseCaseTest {
     @Test
     void givenAInvalidName_whenCallsCreateCastMember_thenThrowsNotificationException() {
         final var expectedErrorMessage = "'name' should not be null";
-        final var command = CreateCastMemberCommand.with(null, Fixture.CastMember.type());
+        final var command = CreateCastMemberCommand.with(null, Fixture.CastMembers.type());
 
         final var exception = Assertions.assertThrows(
                 NotificationException.class,
