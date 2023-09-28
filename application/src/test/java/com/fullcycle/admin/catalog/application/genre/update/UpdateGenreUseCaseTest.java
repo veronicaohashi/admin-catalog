@@ -10,10 +10,8 @@ import com.fullcycle.admin.catalog.domain.genre.GenreGateway;
 import com.fullcycle.admin.catalog.domain.genre.GenreID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Objects;
@@ -190,11 +188,5 @@ class UpdateGenreUseCaseTest extends UseCaseTest {
         verify(genreGateway, times(1)).findById(any());
         verify(categoryGateway, times(0)).existsByIds(any());
         verify(genreGateway, times(0)).update(any());
-    }
-
-    private List<String> asString(final List<CategoryID> categories) {
-        return categories.stream()
-                .map(CategoryID::getValue)
-                .toList();
     }
 }

@@ -5,6 +5,7 @@ import com.fullcycle.admin.catalog.domain.castmember.CastMemberType;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.genre.Genre;
 import com.fullcycle.admin.catalog.domain.video.Rating;
+import com.fullcycle.admin.catalog.domain.video.Resource;
 import com.github.javafaker.Faker;
 
 import java.time.Year;
