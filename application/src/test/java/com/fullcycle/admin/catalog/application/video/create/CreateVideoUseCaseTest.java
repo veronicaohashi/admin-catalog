@@ -689,6 +689,7 @@ class CreateVideoUseCaseTest extends UseCaseTest {
         );
 
         Assertions.assertTrue(response.getMessage().startsWith(expectedErrorMessage));
+        verify(mediaResourceGateway).clearResource(any());
     }
 
     private void mockAudioVideoMedia() {
