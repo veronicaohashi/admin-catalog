@@ -6,12 +6,14 @@ import com.fullcycle.admin.catalog.domain.castmember.CastMemberID;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exception.DomainException;
+import com.fullcycle.admin.catalog.domain.exception.InternalErrorException;
 import com.fullcycle.admin.catalog.domain.exception.NotificationException;
 import com.fullcycle.admin.catalog.domain.genre.GenreGateway;
 import com.fullcycle.admin.catalog.domain.genre.GenreID;
 import com.fullcycle.admin.catalog.domain.validation.Error;
 import com.fullcycle.admin.catalog.domain.validation.ValidationHandler;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
+import com.fullcycle.admin.catalog.domain.video.MediaResourceGateway;
 import com.fullcycle.admin.catalog.domain.video.Rating;
 import com.fullcycle.admin.catalog.domain.video.Video;
 import com.fullcycle.admin.catalog.domain.video.VideoGateway;
@@ -31,17 +33,20 @@ public class DefaultCreateVideoUseCase extends CreateVideoUseCase {
     private final CategoryGateway categoryGateway;
     private final CastMemberGateway castMemberGateway;
     private final GenreGateway genreGateway;
+    private final MediaResourceGateway mediaResourceGateway;
 
     public DefaultCreateVideoUseCase(
             final VideoGateway videoGateway,
             final CategoryGateway categoryGateway,
             final CastMemberGateway castMemberGateway,
-            final GenreGateway genreGateway
+            final GenreGateway genreGateway,
+            final MediaResourceGateway mediaResourceGateway
     ) {
         this.videoGateway = Objects.requireNonNull(videoGateway);
         this.categoryGateway = Objects.requireNonNull(categoryGateway);
         this.castMemberGateway = Objects.requireNonNull(castMemberGateway);
         this.genreGateway = Objects.requireNonNull(genreGateway);
+        this.mediaResourceGateway = Objects.requireNonNull(mediaResourceGateway);
     }
 
     @Override
@@ -71,11 +76,11 @@ public class DefaultCreateVideoUseCase extends CreateVideoUseCase {
         );
 
         video.validate(notification);
-        if(notification.hasError()) {
+        if (notification.hasError()) {
             throw new NotificationException("Could not create Aggregate Video", notification);
         }
 
-        return CreateVideoOutput.from(videoGateway.create(video));
+        return CreateVideoOutput.from(create(command, video));
     }
 
     private ValidationHandler validateCategories(final Set<CategoryID> ids) {
@@ -88,6 +93,46 @@ public class DefaultCreateVideoUseCase extends CreateVideoUseCase {
 
     private ValidationHandler validateCastMembers(final Set<CastMemberID> ids) {
         return validateAggregate("cast_members", ids, castMemberGateway::existsByIds);
+    }
+
+    private Video create(final CreateVideoCommand command, final Video video) {
+        final var id = video.getId();
+
+        try {
+            final var videoMedia = command.getVideo()
+                    .map(it -> mediaResourceGateway.storeAudioVideo(id, it))
+                    .orElse(null);
+
+            final var trailerMedia = command.getTrailer()
+                    .map(it -> mediaResourceGateway.storeAudioVideo(id, it))
+                    .orElse(null);
+
+            final var bannerMedia = command.getBanner()
+                    .map(it -> mediaResourceGateway.storeImage(id, it))
+                    .orElse(null);
+
+            final var thumbnailMedia = command.getThumbnail()
+                    .map(it -> mediaResourceGateway.storeImage(id, it))
+                    .orElse(null);
+
+            final var thumbnailHalfMedia = command.getThumbnailHalf()
+                    .map(it -> mediaResourceGateway.storeImage(id, it))
+                    .orElse(null);
+
+            return videoGateway.create(
+                    video
+                            .setVideo(videoMedia)
+                            .setTrailer(trailerMedia)
+                            .setBanner(bannerMedia)
+                            .setThumbnail(thumbnailMedia)
+                            .setThumbnailHalf(thumbnailHalfMedia)
+            );
+        } catch (final Throwable t) {
+            mediaResourceGateway.clearResource(id);
+            throw InternalErrorException.with(
+                    "An error on create video was observed [videoId:%s]".formatted(id.getValue()), t
+            );
+        }
     }
 
     private <T extends Identifier> ValidationHandler validateAggregate(
