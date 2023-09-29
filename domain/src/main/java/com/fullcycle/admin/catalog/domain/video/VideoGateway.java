@@ -10,7 +10,7 @@ public interface VideoGateway {
 
     Video update(Video video);
 
-    void delete(VideoID videoID);
+    void deleteById(VideoID videoID);
 
     Optional<Video> findById(VideoID videoID);
 
