@@ -29,10 +29,9 @@ class VideoValidatorTest {
                 Set.of(CastMemberID.unique())
         );
 
-        final var validator = new VideoValidator(video, new ThrowsValidationHandler());
         final var error = Assertions.assertThrows(
                 DomainException.class,
-                validator::validate
+                () -> video.validate(new ThrowsValidationHandler())
         );
 
         Assertions.assertEquals(expectedErrorMessage, error.getErrors().get(0).message());
@@ -54,10 +53,9 @@ class VideoValidatorTest {
                 Set.of(CastMemberID.unique())
         );
 
-        final var validator = new VideoValidator(video, new ThrowsValidationHandler());
         final var error = Assertions.assertThrows(
                 DomainException.class,
-                validator::validate
+                () -> video.validate(new ThrowsValidationHandler())
         );
 
         Assertions.assertEquals(expectedErrorMessage, error.getErrors().get(0).message());
@@ -86,10 +84,9 @@ class VideoValidatorTest {
                 Set.of(CastMemberID.unique())
         );
 
-        final var validator = new VideoValidator(video, new ThrowsValidationHandler());
         final var error = Assertions.assertThrows(
                 DomainException.class,
-                validator::validate
+                () -> video.validate(new ThrowsValidationHandler())
         );
 
         Assertions.assertEquals(expectedErrorMessage, error.getErrors().get(0).message());
@@ -111,10 +108,9 @@ class VideoValidatorTest {
                 Set.of(CastMemberID.unique())
         );
 
-        final var validator = new VideoValidator(video, new ThrowsValidationHandler());
         final var error = Assertions.assertThrows(
                 DomainException.class,
-                validator::validate
+                () -> video.validate(new ThrowsValidationHandler())
         );
 
         Assertions.assertEquals(expectedErrorMessage, error.getErrors().get(0).message());
@@ -155,10 +151,9 @@ class VideoValidatorTest {
                 Set.of(CastMemberID.unique())
         );
 
-        final var validator = new VideoValidator(video, new ThrowsValidationHandler());
         final var error = Assertions.assertThrows(
                 DomainException.class,
-                validator::validate
+                () -> video.validate(new ThrowsValidationHandler())
         );
 
         Assertions.assertEquals(expectedErrorMessage, error.getErrors().get(0).message());
@@ -180,10 +175,9 @@ class VideoValidatorTest {
                 Set.of(CastMemberID.unique())
         );
 
-        final var validator = new VideoValidator(video, new ThrowsValidationHandler());
         final var error = Assertions.assertThrows(
                 DomainException.class,
-                validator::validate
+                () -> video.validate(new ThrowsValidationHandler())
         );
 
         Assertions.assertEquals(expectedErrorMessage, error.getErrors().get(0).message());
@@ -205,10 +199,9 @@ class VideoValidatorTest {
                 Set.of(CastMemberID.unique())
         );
 
-        final var validator = new VideoValidator(video, new ThrowsValidationHandler());
         final var error = Assertions.assertThrows(
                 DomainException.class,
-                validator::validate
+                () -> video.validate(new ThrowsValidationHandler())
         );
 
         Assertions.assertEquals(expectedErrorMessage, error.getErrors().get(0).message());

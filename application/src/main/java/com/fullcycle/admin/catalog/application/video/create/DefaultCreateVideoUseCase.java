@@ -5,7 +5,6 @@ import com.fullcycle.admin.catalog.domain.castmember.CastMemberGateway;
 import com.fullcycle.admin.catalog.domain.castmember.CastMemberID;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
-import com.fullcycle.admin.catalog.domain.exception.DomainException;
 import com.fullcycle.admin.catalog.domain.exception.InternalErrorException;
 import com.fullcycle.admin.catalog.domain.exception.NotificationException;
 import com.fullcycle.admin.catalog.domain.genre.GenreGateway;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class DefaultCreateVideoUseCase extends CreateVideoUseCase {
@@ -51,8 +49,8 @@ public class DefaultCreateVideoUseCase extends CreateVideoUseCase {
 
     @Override
     public CreateVideoOutput execute(final CreateVideoCommand command) {
-        final var launchedAt = Year.of(command.launchedAt());
-        final var rating = Rating.of(command.rating()).orElseThrow(invalidRating(command.rating()));
+        final var launchedAt = command.launchedAt() != null ? Year.of(command.launchedAt()) : null;
+        final var rating = Rating.of(command.rating()).orElse(null);
         final var categories = toIdentifier(command.categories(), CategoryID::from);
         final var genres = toIdentifier(command.genres(), GenreID::from);
         final var members = toIdentifier(command.members(), CastMemberID::from);
@@ -92,7 +90,7 @@ public class DefaultCreateVideoUseCase extends CreateVideoUseCase {
     }
 
     private ValidationHandler validateCastMembers(final Set<CastMemberID> ids) {
-        return validateAggregate("cast_members", ids, castMemberGateway::existsByIds);
+        return validateAggregate("cast members", ids, castMemberGateway::existsByIds);
     }
 
     private Video create(final CreateVideoCommand command, final Video video) {
@@ -164,9 +162,5 @@ public class DefaultCreateVideoUseCase extends CreateVideoUseCase {
         return ids.stream()
                 .map(mapper)
                 .collect(Collectors.toSet());
-    }
-
-    private Supplier<DomainException> invalidRating(final String rating) {
-        return () -> DomainException.with(new Error("Rating not found %s".formatted(rating)));
     }
 }
