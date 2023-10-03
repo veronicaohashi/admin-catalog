@@ -4,11 +4,11 @@ import com.fullcycle.admin.catalog.domain.castmember.CastMember;
 import com.fullcycle.admin.catalog.domain.castmember.CastMemberType;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.genre.Genre;
-import com.fullcycle.admin.catalog.domain.video.Rating;
-import com.fullcycle.admin.catalog.domain.video.Resource;
+import com.fullcycle.admin.catalog.domain.video.*;
 import com.github.javafaker.Faker;
 
 import java.time.Year;
+import java.util.UUID;
 
 import static com.fullcycle.admin.catalog.domain.castmember.CastMemberType.ACTOR;
 import static com.fullcycle.admin.catalog.domain.castmember.CastMemberType.DIRECTOR;
@@ -85,6 +85,25 @@ public final class Fixture {
             final byte[] content = "Conteudo".getBytes();
 
             return Resource.with(content, contentType, type.name().toLowerCase(), type);
+        }
+
+        public static AudioVideoMedia audioVideo(final Resource.Type type) {
+            final var checksum = UUID.randomUUID().toString();
+            return AudioVideoMedia.with(
+                    checksum,
+                    type.name().toLowerCase(),
+                    "/videos/" + checksum,
+                    "",
+                    MediaStatus.PENDING
+            );
+        }
+        public static ImageMedia image(final Resource.Type type) {
+            final var checksum = UUID.randomUUID().toString();
+            return ImageMedia.with(
+                    checksum,
+                    type.name().toLowerCase(),
+                    "/images/" + checksum
+            );
         }
     }
 
