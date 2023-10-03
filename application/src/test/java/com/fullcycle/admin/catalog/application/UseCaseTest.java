@@ -1,7 +1,6 @@
 package com.fullcycle.admin.catalog.application;
 
 import com.fullcycle.admin.catalog.domain.Identifier;
-import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;

@@ -3,11 +3,13 @@ package com.fullcycle.admin.catalog.application;
 import com.fullcycle.admin.catalog.domain.castmember.CastMember;
 import com.fullcycle.admin.catalog.domain.castmember.CastMemberType;
 import com.fullcycle.admin.catalog.domain.category.Category;
+import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.genre.Genre;
 import com.fullcycle.admin.catalog.domain.video.*;
 import com.github.javafaker.Faker;
 
 import java.time.Year;
+import java.util.Set;
 import java.util.UUID;
 
 import static com.fullcycle.admin.catalog.domain.castmember.CastMemberType.ACTOR;
@@ -22,9 +24,13 @@ public final class Fixture {
         return FAKER.name().fullName();
     }
 
-    public static Year year() { return Year.of(FAKER.random().nextInt(2020, 2030)); }
+    public static Year year() {
+        return Year.of(FAKER.random().nextInt(2020, 2030));
+    }
 
-    public static Boolean bool() { return FAKER.bool().bool(); }
+    public static Boolean bool() {
+        return FAKER.bool().bool();
+    }
 
     public static final class CastMembers {
         private static final CastMember KAYA_SCODELARIO =
@@ -97,6 +103,7 @@ public final class Fixture {
                     MediaStatus.PENDING
             );
         }
+
         public static ImageMedia image(final Resource.Type type) {
             final var checksum = UUID.randomUUID().toString();
             return ImageMedia.with(
@@ -105,18 +112,49 @@ public final class Fixture {
                     "/images/" + checksum
             );
         }
+
+        public static Video systemDesign() {
+            return Video.newVideo(
+                            Fixture.Videos.title(),
+                            Fixture.Videos.description(),
+                            Fixture.year(),
+                            Fixture.Videos.duration(),
+                            Fixture.Videos.rating(),
+                            Fixture.bool(),
+                            Fixture.bool(),
+                            Set.of(Fixture.Categories.scienceFiction().getId()),
+                            Set.of(Fixture.Genres.dystopian().getId()),
+                            Set.of(
+                                    Fixture.CastMembers.jenniferLawrence().getId(),
+                                    Fixture.CastMembers.kayaScodelario().getId()
+                            )
+                    )
+                    .setVideo(Fixture.Videos.audioVideo(Resource.Type.VIDEO))
+                    .setTrailer(Fixture.Videos.audioVideo(Resource.Type.TRAILER))
+                    .setBanner(Fixture.Videos.image(Resource.Type.BANNER))
+                    .setThumbnail(Fixture.Videos.image(Resource.Type.THUMBNAIL))
+                    .setThumbnailHalf(Fixture.Videos.image(Resource.Type.THUMBNAIL_HALF));
+        }
     }
 
     public static final class Categories {
         public static final Category SCIENCE_FICTION = Category.newCategory("Science Fiction", "", true);
         public static final Category ACTION = Category.newCategory("ACTION", "", true);
 
-        public static Category scienceFiction() { return SCIENCE_FICTION.clone(); }
-        public static Category action() { return ACTION.clone(); }
+        public static Category scienceFiction() {
+            return SCIENCE_FICTION.clone();
+        }
+
+        public static Category action() {
+            return ACTION.clone();
+        }
     }
 
     public static final class Genres {
         public static final Genre DYSTOPIAN = Genre.newGenre("Dystopian", true);
-        public static Genre dystopian() { return Genre.with(DYSTOPIAN); }
+
+        public static Genre dystopian() {
+            return Genre.with(DYSTOPIAN);
+        }
     }
 }
