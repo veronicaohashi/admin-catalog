@@ -1,4 +1,4 @@
-package com.fullcycle.admin.catalog.application.video.get.get;
+package com.fullcycle.admin.catalog.application.video.retrieve.get;
 
 import com.fullcycle.admin.catalog.application.UseCase;
 

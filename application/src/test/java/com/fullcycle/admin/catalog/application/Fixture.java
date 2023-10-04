@@ -32,6 +32,29 @@ public final class Fixture {
         return FAKER.bool().bool();
     }
 
+    public static Video video() {
+        return Video.newVideo(
+                        Fixture.Videos.title(),
+                        Fixture.Videos.description(),
+                        Fixture.year(),
+                        Fixture.Videos.duration(),
+                        Fixture.Videos.rating(),
+                        Fixture.bool(),
+                        Fixture.bool(),
+                        Set.of(Fixture.Categories.scienceFiction().getId()),
+                        Set.of(Fixture.Genres.dystopian().getId()),
+                        Set.of(
+                                Fixture.CastMembers.jenniferLawrence().getId(),
+                                Fixture.CastMembers.kayaScodelario().getId()
+                        )
+                )
+                .setVideo(Fixture.Videos.audioVideo(Resource.Type.VIDEO))
+                .setTrailer(Fixture.Videos.audioVideo(Resource.Type.TRAILER))
+                .setBanner(Fixture.Videos.image(Resource.Type.BANNER))
+                .setThumbnail(Fixture.Videos.image(Resource.Type.THUMBNAIL))
+                .setThumbnailHalf(Fixture.Videos.image(Resource.Type.THUMBNAIL_HALF));
+    }
+
     public static final class CastMembers {
         private static final CastMember KAYA_SCODELARIO =
                 CastMember.newMember("Kaya Scodelario", CastMemberType.ACTOR);
@@ -52,6 +75,19 @@ public final class Fixture {
     }
 
     public static final class Videos {
+        private static final Video SYSTEM_DESIGN = Video.newVideo(
+                "System Design no Mercado Livre na prática",
+                description(),
+                Year.of(2022),
+                Fixture.Videos.duration(),
+                rating(),
+                Fixture.bool(),
+                Fixture.bool(),
+                Set.of(Categories.scienceFiction().getId()),
+                Set.of(Genres.dystopian().getId()),
+                Set.of(CastMembers.jenniferLawrence().getId())
+        );
+
         public static String title() {
             return FAKER.options().option(
                     "Harry Potter and the Sorcerer's Stone",
@@ -114,21 +150,7 @@ public final class Fixture {
         }
 
         public static Video systemDesign() {
-            return Video.newVideo(
-                            Fixture.Videos.title(),
-                            Fixture.Videos.description(),
-                            Fixture.year(),
-                            Fixture.Videos.duration(),
-                            Fixture.Videos.rating(),
-                            Fixture.bool(),
-                            Fixture.bool(),
-                            Set.of(Fixture.Categories.scienceFiction().getId()),
-                            Set.of(Fixture.Genres.dystopian().getId()),
-                            Set.of(
-                                    Fixture.CastMembers.jenniferLawrence().getId(),
-                                    Fixture.CastMembers.kayaScodelario().getId()
-                            )
-                    )
+            return Video.with(SYSTEM_DESIGN)
                     .setVideo(Fixture.Videos.audioVideo(Resource.Type.VIDEO))
                     .setTrailer(Fixture.Videos.audioVideo(Resource.Type.TRAILER))
                     .setBanner(Fixture.Videos.image(Resource.Type.BANNER))

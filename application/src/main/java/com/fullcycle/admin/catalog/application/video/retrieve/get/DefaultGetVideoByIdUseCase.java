@@ -1,4 +1,4 @@
-package com.fullcycle.admin.catalog.application.video.get.get;
+package com.fullcycle.admin.catalog.application.video.retrieve.get;
 
 import com.fullcycle.admin.catalog.domain.exception.NotFoundException;
 import com.fullcycle.admin.catalog.domain.video.Video;
