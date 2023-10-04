@@ -117,7 +117,7 @@ public class DefaultUpdateVideoUseCase extends UpdateVideoUseCase {
         } catch (final Throwable t) {
             mediaResourceGateway.clearResource(id);
             throw  InternalErrorException.with(
-                    "An error on create video was observed [videoId:%s]".formatted(id.getValue()), t
+                    "An error on update video was observed [videoId:%s]".formatted(id.getValue()), t
             );
         }
     }
