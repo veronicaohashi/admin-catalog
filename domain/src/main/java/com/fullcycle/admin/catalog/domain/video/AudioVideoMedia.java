@@ -8,20 +8,20 @@ public class AudioVideoMedia extends ValueObject {
     private final String checksum;
     private final String name;
     private final String rawLocation;
-    private final String encodedLocation;
+    private final String encodedPath;
     private final MediaStatus status;
 
     private AudioVideoMedia(
             final String checksum,
             final String name,
             final String rawLocation,
-            final String encodedLocation,
+            final String encodedPath,
             final MediaStatus status
     ) {
         this.checksum = Objects.requireNonNull(checksum);
         this.name = Objects.requireNonNull(name);
         this.rawLocation = Objects.requireNonNull(rawLocation);
-        this.encodedLocation = Objects.requireNonNull(encodedLocation);
+        this.encodedPath = Objects.requireNonNull(encodedPath);
         this.status = Objects.requireNonNull(status);
     }
 
@@ -47,8 +47,8 @@ public class AudioVideoMedia extends ValueObject {
         return rawLocation;
     }
 
-    public String encodedLocation() {
-        return encodedLocation;
+    public String encodedPath() {
+        return encodedPath;
     }
 
     public MediaStatus status() {

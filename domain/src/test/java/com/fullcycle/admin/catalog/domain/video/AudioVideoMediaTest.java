@@ -24,7 +24,7 @@ class AudioVideoMediaTest {
         Assertions.assertEquals(expectedChecksum, video.checksum());
         Assertions.assertEquals(expectedName, video.name());
         Assertions.assertEquals(expectedRawLocation, video.rawLocation());
-        Assertions.assertEquals(expectedEncodedLocation, video.encodedLocation());
+        Assertions.assertEquals(expectedEncodedLocation, video.encodedPath());
         Assertions.assertEquals(expectedMediaStatus, video.status());
     }
 
