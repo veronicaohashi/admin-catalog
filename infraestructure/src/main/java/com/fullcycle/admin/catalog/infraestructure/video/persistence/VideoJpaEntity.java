@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalog.infraestructure.video.persistence;
 
+import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.video.Rating;
 import com.fullcycle.admin.catalog.domain.video.Video;
 import com.fullcycle.admin.catalog.domain.video.VideoID;
@@ -7,8 +8,11 @@ import com.fullcycle.admin.catalog.domain.video.VideoID;
 import javax.persistence.*;
 import java.time.Instant;
 import java.time.Year;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Table(name = "videos")
 @Entity(name = "Video")
@@ -64,6 +68,12 @@ public class VideoJpaEntity {
     @JoinColumn(name = "thumbnail_half_id")
     private ImageMediaJpaEntity thumbnailHalf;
 
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<VideoCategoryJpaEntity> categories;
+
+    public VideoJpaEntity() {
+        this.categories = new HashSet<>(3);
+    }
 
     private VideoJpaEntity(
             final UUID id,
@@ -97,10 +107,11 @@ public class VideoJpaEntity {
         this.banner = banner;
         this.thumbnail = thumbnail;
         this.thumbnailHalf = thumbnailHalf;
+        this.categories = new HashSet<>(3);
     }
 
     public static VideoJpaEntity from(final Video video) {
-        return new VideoJpaEntity(
+        final var entity = new VideoJpaEntity(
                 UUID.fromString(video.getId().getValue()),
                 video.getTitle(),
                 video.getDescription(),
@@ -127,7 +138,14 @@ public class VideoJpaEntity {
                         .map(ImageMediaJpaEntity::from)
                         .orElse(null)
         );
+
+
+        video.getCategories()
+                .forEach(entity::addCategory);
+
+        return entity;
     }
+
 
     public Video toAggregate() {
         return Video.with(
@@ -156,10 +174,20 @@ public class VideoJpaEntity {
                 Optional.ofNullable(getVideo())
                         .map(AudioVideoMediaJpaEntity::toDomain)
                         .orElse(null),
-                null,
+                getCategories().stream()
+                        .map(it -> CategoryID.from(it.getId().getCategoryId()))
+                        .collect(Collectors.toSet()),
                 null,
                 null
-                );
+        );
+    }
+
+    public void addCategory(final CategoryID categoryID) {
+        this.categories.add(VideoCategoryJpaEntity.from(this, categoryID));
+    }
+
+    public Set<VideoCategoryJpaEntity> getCategories() {
+        return categories;
     }
 
     public ImageMediaJpaEntity getBanner() {

@@ -20,6 +20,8 @@ public class ImageMediaJpaEntity {
     @Column(name = "file_path", nullable = false)
     private String filePath;
 
+    public ImageMediaJpaEntity() {}
+
     private ImageMediaJpaEntity(
             final String id,
             final String name,
