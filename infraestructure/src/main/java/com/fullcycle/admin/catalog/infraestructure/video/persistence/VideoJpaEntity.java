@@ -52,6 +52,18 @@ public class VideoJpaEntity {
     @JoinColumn(name = "trailer_id")
     private AudioVideoMediaJpaEntity trailer;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "banner_id")
+    private ImageMediaJpaEntity banner;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "thumbnail_id")
+    private ImageMediaJpaEntity thumbnail;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "thumbnail_half_id")
+    private ImageMediaJpaEntity thumbnailHalf;
+
 
     private VideoJpaEntity(
             final UUID id,
@@ -65,7 +77,10 @@ public class VideoJpaEntity {
             final Instant createdAt,
             final Instant updatedAt,
             final AudioVideoMediaJpaEntity video,
-            final AudioVideoMediaJpaEntity trailer
+            final AudioVideoMediaJpaEntity trailer,
+            final ImageMediaJpaEntity banner,
+            final ImageMediaJpaEntity thumbnail,
+            final ImageMediaJpaEntity thumbnailHalf
     ) {
         this.id = id;
         this.title = title;
@@ -79,6 +94,9 @@ public class VideoJpaEntity {
         this.updatedAt = updatedAt;
         this.video = video;
         this.trailer = trailer;
+        this.banner = banner;
+        this.thumbnail = thumbnail;
+        this.thumbnailHalf = thumbnailHalf;
     }
 
     public static VideoJpaEntity from(final Video video) {
@@ -98,6 +116,15 @@ public class VideoJpaEntity {
                         .orElse(null),
                 video.getTrailer()
                         .map(AudioVideoMediaJpaEntity::from)
+                        .orElse(null),
+                video.getBanner()
+                        .map(ImageMediaJpaEntity::from)
+                        .orElse(null),
+                video.getThumbnail()
+                        .map(ImageMediaJpaEntity::from)
+                        .orElse(null),
+                video.getThumbnailHalf()
+                        .map(ImageMediaJpaEntity::from)
                         .orElse(null)
         );
     }
@@ -114,9 +141,15 @@ public class VideoJpaEntity {
                 isPublished(),
                 getCreatedAt(),
                 getUpdatedAt(),
-                null,
-                null,
-                null,
+                Optional.ofNullable(getBanner())
+                        .map(ImageMediaJpaEntity::toDomain)
+                        .orElse(null),
+                Optional.ofNullable(getThumbnail())
+                        .map(ImageMediaJpaEntity::toDomain)
+                        .orElse(null),
+                Optional.ofNullable(getThumbnailHalf())
+                        .map(ImageMediaJpaEntity::toDomain)
+                        .orElse(null),
                 Optional.ofNullable(getTrailer())
                         .map(AudioVideoMediaJpaEntity::toDomain)
                         .orElse(null),
@@ -127,6 +160,18 @@ public class VideoJpaEntity {
                 null,
                 null
                 );
+    }
+
+    public ImageMediaJpaEntity getBanner() {
+        return banner;
+    }
+
+    public ImageMediaJpaEntity getThumbnail() {
+        return thumbnail;
+    }
+
+    public ImageMediaJpaEntity getThumbnailHalf() {
+        return thumbnailHalf;
     }
 
     public AudioVideoMediaJpaEntity getVideo() {
