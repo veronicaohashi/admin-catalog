@@ -1,9 +1,9 @@
 package com.fullcycle.admin.catalog.domain.genre;
 
 import com.fullcycle.admin.catalog.domain.Identifier;
+import com.fullcycle.admin.catalog.domain.utils.IdUtils;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class GenreID extends Identifier {
     private final String value;
@@ -14,15 +14,11 @@ public class GenreID extends Identifier {
     }
 
     public static GenreID unique() {
-        return GenreID.from(UUID.randomUUID());
+        return GenreID.from(IdUtils.uuid());
     }
 
     public static GenreID from(final String id) {
         return new GenreID(id);
-    }
-
-    public static GenreID from(final UUID id) {
-        return new GenreID(id.toString().toLowerCase());
     }
 
     @Override

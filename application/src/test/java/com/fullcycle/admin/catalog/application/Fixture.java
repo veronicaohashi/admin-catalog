@@ -3,17 +3,14 @@ package com.fullcycle.admin.catalog.application;
 import com.fullcycle.admin.catalog.domain.castmember.CastMember;
 import com.fullcycle.admin.catalog.domain.castmember.CastMemberType;
 import com.fullcycle.admin.catalog.domain.category.Category;
-import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.genre.Genre;
+import com.fullcycle.admin.catalog.domain.utils.IdUtils;
 import com.fullcycle.admin.catalog.domain.video.*;
 import com.github.javafaker.Faker;
 
 import java.time.Year;
 import java.util.Set;
-import java.util.UUID;
 
-import static com.fullcycle.admin.catalog.domain.castmember.CastMemberType.ACTOR;
-import static com.fullcycle.admin.catalog.domain.castmember.CastMemberType.DIRECTOR;
 import static io.vavr.API.*;
 
 public final class Fixture {
@@ -130,7 +127,7 @@ public final class Fixture {
         }
 
         public static AudioVideoMedia audioVideo(final Resource.Type type) {
-            final var checksum = UUID.randomUUID().toString();
+            final var checksum = IdUtils.uuid();
             return AudioVideoMedia.with(
                     checksum,
                     type.name().toLowerCase(),
@@ -141,7 +138,7 @@ public final class Fixture {
         }
 
         public static ImageMedia image(final Resource.Type type) {
-            final var checksum = UUID.randomUUID().toString();
+            final var checksum = IdUtils.uuid();
             return ImageMedia.with(
                     checksum,
                     type.name().toLowerCase(),

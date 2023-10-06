@@ -1,9 +1,9 @@
 package com.fullcycle.admin.catalog.domain.category;
 
 import com.fullcycle.admin.catalog.domain.Identifier;
+import com.fullcycle.admin.catalog.domain.utils.IdUtils;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class CategoryID extends Identifier {
     private final String value;
@@ -14,15 +14,11 @@ public class CategoryID extends Identifier {
     }
 
     public static CategoryID unique() {
-        return CategoryID.from(UUID.randomUUID());
+        return CategoryID.from(IdUtils.uuid());
     }
 
     public static CategoryID from(final String id) {
         return new CategoryID(id);
-    }
-
-    public static CategoryID from(final UUID id) {
-        return new CategoryID(id.toString().toLowerCase());
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.fullcycle.admin.catalog.infraestructure.category;
 
+import com.fullcycle.admin.catalog.MySQLGatewayTest;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
-import com.fullcycle.admin.catalog.MySQLGatewayTest;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
@@ -240,5 +240,26 @@ class CategoryMySQLGatewayTest {
         Assertions.assertEquals(expectedTotal, response.total());
         Assertions.assertEquals(expectedPerPage, response.items().size());
         Assertions.assertEquals(movie.getId(), response.items().get(0).getId());
+    }
+
+    @Test
+    public void givenPrePersistedCategories_whenCallsExistsByIds_thenReturnIds() {
+        final var filmes = Category.newCategory("Filmes", "A categoria mais assistida", true);
+        final var series = Category.newCategory("Séries", "Uma categoria assistida", true);
+        final var documentarios = Category.newCategory("Documentários", "A categoria menos assistida", true);
+        categoryRepository.saveAll(List.of(
+                CategoryJpaEntity.from(filmes),
+                CategoryJpaEntity.from(series),
+                CategoryJpaEntity.from(documentarios)
+        ));
+        final var expectedIds = List.of(filmes.getId(), series.getId());
+        final var ids = List.of(filmes.getId(), series.getId(), CategoryID.from("123"));
+
+        final var result = categoryGateway.existsByIds(ids);
+
+        Assertions.assertTrue(
+                expectedIds.size() == result.size() &&
+                        expectedIds.containsAll(result)
+        );
     }
 }

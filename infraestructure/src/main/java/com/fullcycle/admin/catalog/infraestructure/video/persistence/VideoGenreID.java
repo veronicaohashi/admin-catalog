@@ -4,27 +4,26 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
 @Embeddable
 public class VideoGenreID implements Serializable {
 
     @Column(name = "video_id", nullable = false)
-    private UUID videoId;
+    private String videoId;
 
     @Column(name = "genre_id", nullable = false)
-    private UUID genreId;
+    private String genreId;
 
     public VideoGenreID() {
 
     }
 
-    private VideoGenreID(final UUID videoId, final UUID genreId) {
+    private VideoGenreID(final String videoId, final String genreId) {
         this.videoId = videoId;
         this.genreId = genreId;
     }
 
-    public static VideoGenreID from(final UUID videoId, final UUID genreId) {
+    public static VideoGenreID from(final String videoId, final String genreId) {
         return new VideoGenreID(videoId, genreId);
     }
 
@@ -41,11 +40,11 @@ public class VideoGenreID implements Serializable {
         return Objects.hash(getVideoId(), getGenreId());
     }
 
-    public UUID getVideoId() {
+    public String getVideoId() {
         return videoId;
     }
 
-    public UUID getGenreId() {
+    public String getGenreId() {
         return genreId;
     }
 }
