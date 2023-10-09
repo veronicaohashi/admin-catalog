@@ -1,10 +1,10 @@
 package com.fullcycle.admin.catalog.application.video.retrieve.list;
 
-import com.fullcycle.admin.catalog.application.Fixture;
 import com.fullcycle.admin.catalog.application.UseCaseTest;
+import com.fullcycle.admin.catalog.domain.Fixture;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
-import com.fullcycle.admin.catalog.domain.video.Video;
 import com.fullcycle.admin.catalog.domain.video.VideoGateway;
+import com.fullcycle.admin.catalog.domain.video.VideoPreview;
 import com.fullcycle.admin.catalog.domain.video.VideoSearchQuery;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -33,8 +34,8 @@ class ListVideoUseCaseTest extends UseCaseTest {
     @Test
     void givenAValidQuery_whenCallsListVideos_shouldReturnVideos() {
         final var expectedVideos = List.of(
-                Fixture.video(),
-                Fixture.video()
+                new VideoPreview(Fixture.video()),
+                new VideoPreview(Fixture.video())
         );
         final var expectedPage = 0;
         final var expectedPerPage = 10;
@@ -46,7 +47,16 @@ class ListVideoUseCaseTest extends UseCaseTest {
                 .map(VideoListOutput::from)
                 .toList();
         final var expectedPagination = new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedVideos);
-        final var query = new VideoSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var query = new VideoSearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection,
+                Set.of(),
+                Set.of(),
+                Set.of()
+        );
         when(videoGateway.findAll(any()))
                 .thenReturn(expectedPagination);
 
@@ -68,8 +78,17 @@ class ListVideoUseCaseTest extends UseCaseTest {
         final var expectedDirection = "asc";
         final var expectedTotal = 0;
         final var expectedItems = List.<VideoListOutput>of();
-        final var expectedPagination = new Pagination<>(expectedPage, expectedPerPage, expectedTotal, List.<Video>of());
-        final var query = new VideoSearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var expectedPagination = new Pagination<>(expectedPage, expectedPerPage, expectedTotal, List.<VideoPreview>of());
+        final var query = new VideoSearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection,
+                Set.of(),
+                Set.of(),
+                Set.of()
+        );
         when(videoGateway.findAll(any()))
                 .thenReturn(expectedPagination);
 
@@ -85,7 +104,16 @@ class ListVideoUseCaseTest extends UseCaseTest {
     @Test
     void givenAValidQuery_whenCallsListVideosAndGatewayThrowsRandomError_shouldReturnException() {
         final var expectedErrorMessage = "Gateway error";
-            final var query = new VideoSearchQuery(0, 10, "", "", "");
+        final var query = new VideoSearchQuery(
+                0,
+                10,
+                "",
+                "",
+                "",
+                Set.of(),
+                Set.of(),
+                Set.of()
+        );
         when(videoGateway.findAll(any()))
                 .thenThrow(new IllegalStateException(expectedErrorMessage));
 

@@ -9,4 +9,13 @@ public record VideoPreview(
         Instant createdAt,
         Instant updatedAt
 ) {
+    public VideoPreview(final Video video) {
+        this(
+                video.getId().getValue(),
+                video.getTitle(),
+                video.getDescription(),
+                video.getCreatedAt(),
+                video.getUpdatedAt()
+        );
+    }
 }

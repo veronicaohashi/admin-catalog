@@ -1,6 +1,6 @@
 package com.fullcycle.admin.catalog.application.castmember.update;
 
-import com.fullcycle.admin.catalog.Fixture;
+import com.fullcycle.admin.catalog.domain.Fixture;
 import com.fullcycle.admin.catalog.IntegrationTest;
 import com.fullcycle.admin.catalog.domain.castmember.CastMember;
 import com.fullcycle.admin.catalog.domain.castmember.CastMemberGateway;
@@ -33,9 +33,9 @@ class UpdateCastMemberUseCaseIT {
 
     @Test
     void givenAValidCommand_whenCallsUpdateCastMember_thenReturnItsIdentifier() {
-        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
         final var expectedId = member.getId();
         castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(member));
         final var command = UpdateCastMemberCommand.with(expectedId.getValue(), expectedName, expectedType);
@@ -54,11 +54,11 @@ class UpdateCastMemberUseCaseIT {
 
     @Test
     void givenAInvalidName_whenCallsUpdateCastMember_thenThrowsNotificationException() {
-        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
         final var expectedId = member.getId();
         castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(member));
         final var expectedErrorMessage = "'name' should not be null";
-        final var command = UpdateCastMemberCommand.with(expectedId.getValue(), null, Fixture.CastMember.type());
+        final var command = UpdateCastMemberCommand.with(expectedId.getValue(), null, Fixture.CastMembers.type());
 
         final var exception = Assertions.assertThrows(
                 NotificationException.class,
@@ -72,7 +72,7 @@ class UpdateCastMemberUseCaseIT {
 
     @Test
     void givenAInvalidType_whenCallsUpdateCastMember_thenThrowsNotificationException() {
-        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
         final var expectedId = member.getId();
         castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(member));
         final var expectedErrorMessage = "'type' should not be null";

@@ -1,4 +1,4 @@
-package com.fullcycle.admin.catalog.application;
+package com.fullcycle.admin.catalog.domain;
 
 import com.fullcycle.admin.catalog.domain.castmember.CastMember;
 import com.fullcycle.admin.catalog.domain.castmember.CastMemberType;
@@ -31,25 +31,25 @@ public final class Fixture {
 
     public static Video video() {
         return Video.newVideo(
-                        Fixture.Videos.title(),
-                        Fixture.Videos.description(),
+                        Videos.title(),
+                        Videos.description(),
                         Fixture.year(),
-                        Fixture.Videos.duration(),
-                        Fixture.Videos.rating(),
+                        Videos.duration(),
+                        Videos.rating(),
                         Fixture.bool(),
                         Fixture.bool(),
-                        Set.of(Fixture.Categories.scienceFiction().getId()),
-                        Set.of(Fixture.Genres.dystopian().getId()),
+                        Set.of(Categories.scienceFiction().getId()),
+                        Set.of(Genres.dystopian().getId()),
                         Set.of(
-                                Fixture.CastMembers.jenniferLawrence().getId(),
-                                Fixture.CastMembers.kayaScodelario().getId()
+                                CastMembers.jenniferLawrence().getId(),
+                                CastMembers.kayaScodelario().getId()
                         )
                 )
-                .setVideo(Fixture.Videos.audioVideo(Resource.Type.VIDEO))
-                .setTrailer(Fixture.Videos.audioVideo(Resource.Type.TRAILER))
-                .setBanner(Fixture.Videos.image(Resource.Type.BANNER))
-                .setThumbnail(Fixture.Videos.image(Resource.Type.THUMBNAIL))
-                .setThumbnailHalf(Fixture.Videos.image(Resource.Type.THUMBNAIL_HALF));
+                .setVideo(Videos.audioVideo(Resource.Type.VIDEO))
+                .setTrailer(Videos.audioVideo(Resource.Type.TRAILER))
+                .setBanner(Videos.image(Resource.Type.BANNER))
+                .setThumbnail(Videos.image(Resource.Type.THUMBNAIL))
+                .setThumbnailHalf(Videos.image(Resource.Type.THUMBNAIL_HALF));
     }
 
     public static final class CastMembers {
@@ -76,7 +76,7 @@ public final class Fixture {
                 "System Design no Mercado Livre na prática",
                 description(),
                 Year.of(2022),
-                Fixture.Videos.duration(),
+                Videos.duration(),
                 rating(),
                 Fixture.bool(),
                 Fixture.bool(),
@@ -148,11 +148,11 @@ public final class Fixture {
 
         public static Video systemDesign() {
             return Video.with(SYSTEM_DESIGN)
-                    .setVideo(Fixture.Videos.audioVideo(Resource.Type.VIDEO))
-                    .setTrailer(Fixture.Videos.audioVideo(Resource.Type.TRAILER))
-                    .setBanner(Fixture.Videos.image(Resource.Type.BANNER))
-                    .setThumbnail(Fixture.Videos.image(Resource.Type.THUMBNAIL))
-                    .setThumbnailHalf(Fixture.Videos.image(Resource.Type.THUMBNAIL_HALF));
+                    .setVideo(Videos.audioVideo(Resource.Type.VIDEO))
+                    .setTrailer(Videos.audioVideo(Resource.Type.TRAILER))
+                    .setBanner(Videos.image(Resource.Type.BANNER))
+                    .setThumbnail(Videos.image(Resource.Type.THUMBNAIL))
+                    .setThumbnailHalf(Videos.image(Resource.Type.THUMBNAIL_HALF));
         }
     }
 

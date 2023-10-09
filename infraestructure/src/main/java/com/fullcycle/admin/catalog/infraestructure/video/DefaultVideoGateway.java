@@ -2,6 +2,7 @@ package com.fullcycle.admin.catalog.infraestructure.video;
 
 import com.fullcycle.admin.catalog.domain.Identifier;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
+import com.fullcycle.admin.catalog.domain.utils.CollectionUtils;
 import com.fullcycle.admin.catalog.domain.video.*;
 import com.fullcycle.admin.catalog.infraestructure.utils.SqlUtils;
 import com.fullcycle.admin.catalog.infraestructure.video.persistence.VideoJpaEntity;
@@ -14,6 +15,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.fullcycle.admin.catalog.domain.utils.CollectionUtils.mapTo;
+import static com.fullcycle.admin.catalog.domain.utils.CollectionUtils.nullIfEmpty;
 
 public class DefaultVideoGateway implements VideoGateway {
 
@@ -60,9 +64,9 @@ public class DefaultVideoGateway implements VideoGateway {
 
         final var result = videoRepository.findAll(
                 SqlUtils.like(query.terms()),
-                toString(query.categories()),
-                toString(query.genres()),
-                toString(query.castMembers()),
+                nullIfEmpty(mapTo(query.categories(), Identifier::getValue)),
+                nullIfEmpty(mapTo(query.genres(), Identifier::getValue)),
+                nullIfEmpty(mapTo(query.castMembers(), Identifier::getValue)),
                 page
         );
 

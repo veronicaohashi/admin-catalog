@@ -1,6 +1,6 @@
 package com.fullcycle.admin.catalog.infraestructure.castmember;
 
-import com.fullcycle.admin.catalog.Fixture;
+import com.fullcycle.admin.catalog.domain.Fixture;
 import com.fullcycle.admin.catalog.MySQLGatewayTest;
 import com.fullcycle.admin.catalog.domain.castmember.CastMember;
 import com.fullcycle.admin.catalog.domain.castmember.CastMemberID;
@@ -30,7 +30,7 @@ class CastMemberMySQLGatewayTest {
     @Test
     void givenAValidCastMember_whenCallsCreate_thenPersistIt() {
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
         final var member = CastMember.newMember(expectedName, expectedType);
         final var expectedId = member.getId();
 
@@ -54,8 +54,8 @@ class CastMemberMySQLGatewayTest {
     @Test
     void givenAValidCastMember_whenCallsUpdate_thenRefreshIt() {
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
-        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var expectedType = Fixture.CastMembers.type();
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
         final var expectedId = member.getId();
         castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(member));
 
@@ -80,7 +80,7 @@ class CastMemberMySQLGatewayTest {
 
     @Test
     void givenAValidCastMember_whenCallsDeleteById_shouldDeleteIt() {
-        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
         final var expectedId = member.getId();
         castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(member));
 
@@ -99,7 +99,7 @@ class CastMemberMySQLGatewayTest {
     @Test
     void givenAValidCastMember_whenCallsFindById_thenReturnIt() {
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
         final var member = CastMember.newMember(expectedName, expectedType);
         final var expectedId = member.getId();
         castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(member));

@@ -1,6 +1,6 @@
 package com.fullcycle.admin.catalog.application.castmember.delete;
 
-import com.fullcycle.admin.catalog.Fixture;
+import com.fullcycle.admin.catalog.domain.Fixture;
 import com.fullcycle.admin.catalog.IntegrationTest;
 import com.fullcycle.admin.catalog.domain.castmember.CastMember;
 import com.fullcycle.admin.catalog.domain.castmember.CastMemberGateway;
@@ -29,8 +29,8 @@ class DeleteCastMemberUseCaseIT {
 
     @Test
     void givenAValidId_whenCallsDeleteCastMember_thenDeleteIt() {
-        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
-        final var memberTwo = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
+        final var memberTwo = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
         final var expectedId = member.getId();
         castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(member));
         castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(memberTwo));
@@ -43,7 +43,7 @@ class DeleteCastMemberUseCaseIT {
 
     @Test
     void givenAnInvalidId_whenCallsDeleteCastMember_thenBeOk() {
-        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
         castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(member));
         final var expectedId = CastMemberID.from("123");
 
@@ -55,7 +55,7 @@ class DeleteCastMemberUseCaseIT {
 
     @Test
     void givenAValidId_whenCallsDeleteCastMemberAndGatewayThrowsException_thenReceiveException() {
-        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMember.type());
+        final var member = CastMember.newMember(Fixture.name(), Fixture.CastMembers.type());
         castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(member));
         final var expectedId = CastMemberID.from("123");
         doThrow(new IllegalStateException("Gateway error"))

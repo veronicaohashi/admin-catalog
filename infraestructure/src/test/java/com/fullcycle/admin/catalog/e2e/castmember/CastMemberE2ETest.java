@@ -1,7 +1,7 @@
 package com.fullcycle.admin.catalog.e2e.castmember;
 
 import com.fullcycle.admin.catalog.E2ETest;
-import com.fullcycle.admin.catalog.Fixture;
+import com.fullcycle.admin.catalog.domain.Fixture;
 import com.fullcycle.admin.catalog.domain.castmember.CastMemberID;
 import com.fullcycle.admin.catalog.e2e.MockDsl;
 import com.fullcycle.admin.catalog.infraestructure.castmember.persistence.CastMemberRepository;
@@ -50,7 +50,7 @@ class CastMemberE2ETest implements MockDsl {
     void asACatalogAdminIShouldBeAbleToCreateANewCastMemberWithValidValues() throws Exception {
         Assertions.assertEquals(0, castMemberRepository.count());
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
 
         final var castMemberID = givenACastMember(expectedName, expectedType);
         final var castMember = castMemberRepository.findById(castMemberID.getValue()).get();
@@ -66,7 +66,7 @@ class CastMemberE2ETest implements MockDsl {
         Assertions.assertEquals(0, castMemberRepository.count());
         final var expectedErrorMessage = "'name' should not be null";
 
-        givenACastMemberResult(null, Fixture.CastMember.type())
+        givenACastMemberResult(null, Fixture.CastMembers.type())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(header().string("Location", nullValue()))
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
@@ -75,9 +75,9 @@ class CastMemberE2ETest implements MockDsl {
 
     @Test
     void asACatalogAdminIShouldBeAbleToNavigateThruAllMembers() throws Exception {
-        givenACastMember("Vin Diesel", Fixture.CastMember.type());
-        givenACastMember("Quentin Tarantino", Fixture.CastMember.type());
-        givenACastMember("Jason Momoa", Fixture.CastMember.type());
+        givenACastMember("Vin Diesel", Fixture.CastMembers.type());
+        givenACastMember("Quentin Tarantino", Fixture.CastMembers.type());
+        givenACastMember("Jason Momoa", Fixture.CastMembers.type());
 
         listCastMembers(0, 1)
                 .andExpect(status().isOk())
@@ -113,9 +113,9 @@ class CastMemberE2ETest implements MockDsl {
 
     @Test
     void asACatalogAdminIShouldBeAbleToSearchThruAllMembers() throws Exception {
-        givenACastMember("Vin Diesel", Fixture.CastMember.type());
-        givenACastMember("Quentin Tarantino", Fixture.CastMember.type());
-        givenACastMember("Jason Momoa", Fixture.CastMember.type());
+        givenACastMember("Vin Diesel", Fixture.CastMembers.type());
+        givenACastMember("Quentin Tarantino", Fixture.CastMembers.type());
+        givenACastMember("Jason Momoa", Fixture.CastMembers.type());
 
         listCastMembers(0, 1, "vin")
                 .andExpect(status().isOk())
@@ -128,9 +128,9 @@ class CastMemberE2ETest implements MockDsl {
 
     @Test
     void asACatalogAdminIShouldBeAbleToSortAllMembersByNameDesc() throws Exception {
-        givenACastMember("Vin Diesel", Fixture.CastMember.type());
-        givenACastMember("Quentin Tarantino", Fixture.CastMember.type());
-        givenACastMember("Jason Momoa", Fixture.CastMember.type());
+        givenACastMember("Vin Diesel", Fixture.CastMembers.type());
+        givenACastMember("Quentin Tarantino", Fixture.CastMembers.type());
+        givenACastMember("Jason Momoa", Fixture.CastMembers.type());
 
         listCastMembers(0, 1, "", "name", "desc")
                 .andExpect(status().isOk())
@@ -144,7 +144,7 @@ class CastMemberE2ETest implements MockDsl {
     @Test
     void asACatalogAdminIShouldBeAbleToGetACastMemberByItsIdentifier() throws Exception {
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
+        final var expectedType = Fixture.CastMembers.type();
         final var expectedId = givenACastMember(expectedName, expectedType);
 
         final var castMember = retrieveACastMember(expectedId);
@@ -167,8 +167,8 @@ class CastMemberE2ETest implements MockDsl {
     @Test
     void asACatalogAdminIShouldBeAbleToUpdateACastMemberByItsIdentifier() throws Exception {
         final var expectedName = Fixture.name();
-        final var expectedType = Fixture.CastMember.type();
-        final var expectedId = givenACastMember(Fixture.name(), Fixture.CastMember.type());
+        final var expectedType = Fixture.CastMembers.type();
+        final var expectedId = givenACastMember(Fixture.name(), Fixture.CastMembers.type());
 
         updateACastMember(expectedId, expectedName, expectedType)
                 .andExpect(status().isOk());
@@ -185,16 +185,16 @@ class CastMemberE2ETest implements MockDsl {
     @Test
     void asACatalogAdminIShouldBeAbleToSeeATreatedErrorByUpdatingACastMemberWithInvalidValue() throws Exception {
         final var expectedErrorMessage = "'name' should not be empty";
-        final var expectedId = givenACastMember(Fixture.name(), Fixture.CastMember.type());
+        final var expectedId = givenACastMember(Fixture.name(), Fixture.CastMembers.type());
 
-        updateACastMember(expectedId, "", Fixture.CastMember.type())
+        updateACastMember(expectedId, "", Fixture.CastMembers.type())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.errors[0].message", Matchers.equalTo(expectedErrorMessage)));
     }
 
     @Test
     void asACatalogAdminIShouldBeAbleToDeleteACastMemberByItsIdentifier() throws Exception {
-        final var expectedId = givenACastMember(Fixture.name(), Fixture.CastMember.type());
+        final var expectedId = givenACastMember(Fixture.name(), Fixture.CastMembers.type());
 
         deleteACastMember(expectedId)
                 .andExpect(status().isNoContent());
