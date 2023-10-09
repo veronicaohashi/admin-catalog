@@ -20,7 +20,7 @@ public interface VideoRepository extends JpaRepository<VideoJpaEntity, String> {
                 v.title as title,
                 v.description as description,
                 v.createdAt as createdAt,
-                v.updatedAt as updateAt
+                v.updatedAt as updatedAt
             )
             from Video v
                 join v.categories categories
@@ -28,8 +28,11 @@ public interface VideoRepository extends JpaRepository<VideoJpaEntity, String> {
                 join v.castMembers castMembers
             where
                 ( :terms is null or UPPER(v.title) like :terms )
+            and
                 ( :categories is null or categories.id.categoryId in :categories )
+            and
                 ( :genres is null or genres.id.genreId in :genres )
+            and
                 ( :castMembers is null or castMembers.id.castMemberId in :castMembers )
             """)
     Page<VideoPreview> findAll(
