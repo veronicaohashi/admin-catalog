@@ -1,16 +1,19 @@
 package com.fullcycle.admin.catalog.infraestructure.video;
 
+import com.fullcycle.admin.catalog.domain.Identifier;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
-import com.fullcycle.admin.catalog.domain.video.Video;
-import com.fullcycle.admin.catalog.domain.video.VideoGateway;
-import com.fullcycle.admin.catalog.domain.video.VideoID;
-import com.fullcycle.admin.catalog.domain.video.VideoSearchQuery;
+import com.fullcycle.admin.catalog.domain.video.*;
+import com.fullcycle.admin.catalog.infraestructure.utils.SqlUtils;
 import com.fullcycle.admin.catalog.infraestructure.video.persistence.VideoJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.video.persistence.VideoRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DefaultVideoGateway implements VideoGateway {
 
@@ -35,7 +38,7 @@ public class DefaultVideoGateway implements VideoGateway {
     @Override
     public void deleteById(final VideoID id) {
         final var videoID = id.getValue();
-        if(videoRepository.existsById(videoID)) {
+        if (videoRepository.existsById(videoID)) {
             videoRepository.deleteById(videoID);
         }
     }
@@ -48,8 +51,35 @@ public class DefaultVideoGateway implements VideoGateway {
     }
 
     @Override
-    public Pagination<Video> findAll(final VideoSearchQuery query) {
-        return null;
+    public Pagination<VideoPreview> findAll(final VideoSearchQuery query) {
+        final var page = PageRequest.of(
+                query.page(),
+                query.perPage(),
+                Sort.by(Sort.Direction.fromString(query.direction()), query.sort())
+        );
+
+        final var result = videoRepository.findAll(
+                SqlUtils.like(query.terms()),
+                toString(query.categories()),
+                toString(query.genres()),
+                toString(query.castMembers()),
+                page
+        );
+
+        return new Pagination<>(
+                result.getNumber(),
+                result.getSize(),
+                result.getTotalElements(),
+                result.toList()
+        );
+    }
+
+    private Set<String> toString(Set<? extends Identifier> ids) {
+        if (ids == null || ids.isEmpty()) return null;
+
+        return ids.stream()
+                .map(Identifier::getValue)
+                .collect(Collectors.toSet());
     }
 
     private Video save(final Video video) {
