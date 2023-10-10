@@ -11,6 +11,7 @@ import com.fullcycle.admin.catalog.domain.genre.GenreID;
 import com.fullcycle.admin.catalog.domain.video.AudioVideoMedia;
 import com.fullcycle.admin.catalog.domain.video.ImageMedia;
 import com.fullcycle.admin.catalog.domain.video.Video;
+import com.fullcycle.admin.catalog.domain.video.VideoID;
 import com.fullcycle.admin.catalog.infraestructure.video.persistence.VideoRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -270,5 +271,32 @@ class DefaultVideoGatewayTest {
         Assertions.assertEquals(expectedThumb.name(), persistedVideo.getThumbnail().getName());
         Assertions.assertEquals(expectedThumbHalf.name(), persistedVideo.getThumbnailHalf().getName());
         Assertions.assertTrue(video.getUpdatedAt().isBefore(persistedVideo.getUpdatedAt()));
+    }
+
+    @Test
+    void givenAValidVideoId_whenCallsDeleteById_thenDeleteIt() {
+        final var video = videoGateway.create(Video.newVideo(
+                Fixture.Videos.title(),
+                Fixture.Videos.description(),
+                Fixture.year(),
+                Fixture.Videos.duration(),
+                Fixture.Videos.rating(),
+                Fixture.bool(),
+                Fixture.bool(),
+                Set.of(),
+                Set.of(),
+                Set.of()
+        ));
+
+        videoGateway.deleteById(video.getId());
+
+        Assertions.assertEquals(0, videoRepository.count());
+    }
+
+    @Test
+    void givenAnInvalidVideoId_whenCallsDeleteById_thenDeleteIt() {
+        videoGateway.deleteById(VideoID.unique());
+
+        Assertions.assertEquals(0, videoRepository.count());
     }
 }
