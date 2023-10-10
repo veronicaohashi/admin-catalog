@@ -131,9 +131,7 @@ public final class Fixture {
             return AudioVideoMedia.with(
                     checksum,
                     type.name().toLowerCase(),
-                    "/videos/" + checksum,
-                    "",
-                    MediaStatus.PENDING
+                    "/videos/" + checksum
             );
         }
 

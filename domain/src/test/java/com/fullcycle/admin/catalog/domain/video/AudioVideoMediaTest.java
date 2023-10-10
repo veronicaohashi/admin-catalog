@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalog.domain.video;
 
+import com.fullcycle.admin.catalog.domain.utils.IdUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -7,6 +8,7 @@ class AudioVideoMediaTest {
 
     @Test
     void givenValidParams_whenCallsNewAudioVideo_thenReturnInstance() {
+        final var expectedId = IdUtils.uuid();
         final var expectedChecksum = "abc";
         final var expectedName = "Video.mp4";
         final var expectedRawLocation = "/videos";
@@ -14,6 +16,7 @@ class AudioVideoMediaTest {
         final var expectedMediaStatus = MediaStatus.COMPLETED;
 
         final var video = AudioVideoMedia.with(
+                expectedId,
                 expectedChecksum,
                 expectedName,
                 expectedRawLocation,
@@ -21,6 +24,7 @@ class AudioVideoMediaTest {
                 expectedMediaStatus
         );
 
+        Assertions.assertEquals(expectedId, video.id());
         Assertions.assertEquals(expectedChecksum, video.checksum());
         Assertions.assertEquals(expectedName, video.name());
         Assertions.assertEquals(expectedRawLocation, video.rawLocation());
@@ -36,17 +40,13 @@ class AudioVideoMediaTest {
         final var video1 = AudioVideoMedia.with(
                 expectedChecksum,
                 "Video1.mp4",
-                expectedLocation,
-                "/videos/encoded",
-                MediaStatus.COMPLETED
+                expectedLocation
         );
 
         final var video2 = AudioVideoMedia.with(
                 expectedChecksum,
                 "Video2.mp4",
-                expectedLocation,
-                "/videos/encoded",
-                MediaStatus.COMPLETED
+                expectedLocation
         );
 
 
@@ -58,27 +58,32 @@ class AudioVideoMediaTest {
     void givenInvalidParams_whenCallsWith_thenReturnError() {
         Assertions.assertThrows(
                 NullPointerException.class,
-                () -> AudioVideoMedia.with(null, "Random", "/videos", "/videos", MediaStatus.PENDING)
+                () -> AudioVideoMedia.with(null, "abc", "Random", "/videos", "/videos", MediaStatus.PENDING)
         );
 
         Assertions.assertThrows(
                 NullPointerException.class,
-                () -> AudioVideoMedia.with("abc", null, "/videos", "/videos", MediaStatus.PENDING)
+                () -> AudioVideoMedia.with("123",null, "Random", "/videos", "/videos", MediaStatus.PENDING)
         );
 
         Assertions.assertThrows(
                 NullPointerException.class,
-                () -> AudioVideoMedia.with("abc", "Random", null, "/videos", MediaStatus.PENDING)
+                () -> AudioVideoMedia.with("123","abc", null, "/videos", "/videos", MediaStatus.PENDING)
         );
 
         Assertions.assertThrows(
                 NullPointerException.class,
-                () -> AudioVideoMedia.with("abc", "Random", "/videos", null, MediaStatus.PENDING)
+                () -> AudioVideoMedia.with("123","abc", "Random", null, "/videos", MediaStatus.PENDING)
         );
 
         Assertions.assertThrows(
                 NullPointerException.class,
-                () -> AudioVideoMedia.with("abc", "Random", "/videos", "/videos", null)
+                () -> AudioVideoMedia.with("123","abc", "Random", "/videos", null, MediaStatus.PENDING)
+        );
+
+        Assertions.assertThrows(
+                NullPointerException.class,
+                () -> AudioVideoMedia.with("123","abc", "Random", "/videos", "/videos", null)
         );
     }
 }

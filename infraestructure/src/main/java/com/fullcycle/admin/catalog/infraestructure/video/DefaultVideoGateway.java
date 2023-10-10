@@ -9,6 +9,7 @@ import com.fullcycle.admin.catalog.infraestructure.video.persistence.VideoJpaEnt
 import com.fullcycle.admin.catalog.infraestructure.video.persistence.VideoRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 import static com.fullcycle.admin.catalog.domain.utils.CollectionUtils.mapTo;
 import static com.fullcycle.admin.catalog.domain.utils.CollectionUtils.nullIfEmpty;
 
+@Component
 public class DefaultVideoGateway implements VideoGateway {
 
     private final VideoRepository videoRepository;
@@ -76,14 +78,6 @@ public class DefaultVideoGateway implements VideoGateway {
                 result.getTotalElements(),
                 result.toList()
         );
-    }
-
-    private Set<String> toString(Set<? extends Identifier> ids) {
-        if (ids == null || ids.isEmpty()) return null;
-
-        return ids.stream()
-                .map(Identifier::getValue)
-                .collect(Collectors.toSet());
     }
 
     private Video save(final Video video) {

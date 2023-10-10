@@ -134,9 +134,7 @@ class VideoTest {
         final var expectedVideo = AudioVideoMedia.with(
                 "abc",
                 "Video.mp4",
-                "/videos",
-                "",
-                MediaStatus.PENDING
+                "/videos"
         );
         final var video = Video.newVideo(
                 "Test Title",
@@ -163,9 +161,7 @@ class VideoTest {
         final var expectedTrailer = AudioVideoMedia.with(
                 "abc",
                 "Trailer.mp4",
-                "/trailers",
-                "",
-                MediaStatus.PENDING
+                "/trailers"
         );
         final var video = Video.newVideo(
                 "Test Title",
