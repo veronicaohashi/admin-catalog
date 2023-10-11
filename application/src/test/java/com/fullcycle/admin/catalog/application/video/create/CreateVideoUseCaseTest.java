@@ -700,7 +700,11 @@ class CreateVideoUseCaseTest extends UseCaseTest {
         when(mediaResourceGateway.storeAudioVideo(any(), any()))
                 .thenAnswer(t -> {
                     final var resource = t.getArgument(1, Resource.class);
-                    return AudioVideoMedia.with(IdUtils.uuid(), resource.name(), "/img", "", MediaStatus.PENDING);
+                    return AudioVideoMedia.with(
+                            IdUtils.uuid(),
+                            resource.name(),
+                            "/img"
+                    );
                 });
     }
 
