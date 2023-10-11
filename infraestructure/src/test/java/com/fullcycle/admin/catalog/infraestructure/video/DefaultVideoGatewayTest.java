@@ -2,18 +2,19 @@ package com.fullcycle.admin.catalog.infraestructure.video;
 
 import com.fullcycle.admin.catalog.IntegrationTest;
 import com.fullcycle.admin.catalog.domain.Fixture;
+import com.fullcycle.admin.catalog.domain.castmember.CastMember;
 import com.fullcycle.admin.catalog.domain.castmember.CastMemberGateway;
 import com.fullcycle.admin.catalog.domain.castmember.CastMemberID;
+import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
+import com.fullcycle.admin.catalog.domain.genre.Genre;
 import com.fullcycle.admin.catalog.domain.genre.GenreGateway;
 import com.fullcycle.admin.catalog.domain.genre.GenreID;
-import com.fullcycle.admin.catalog.domain.video.AudioVideoMedia;
-import com.fullcycle.admin.catalog.domain.video.ImageMedia;
-import com.fullcycle.admin.catalog.domain.video.Video;
-import com.fullcycle.admin.catalog.domain.video.VideoID;
+import com.fullcycle.admin.catalog.domain.video.*;
 import com.fullcycle.admin.catalog.infraestructure.video.persistence.VideoRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,13 +39,33 @@ class DefaultVideoGatewayTest {
 
     @Autowired
     private VideoRepository videoRepository;
+    private Category scienceFiction;
+
+    private Category action;
+
+    private Genre dystopian;
+
+    private CastMember jenniferLawrence;
+
+    private CastMember kayaScodelario;
+
+    private CastMember emmaWatson;
+
+    @BeforeEach
+    public void setUp() {
+        scienceFiction = categoryGateway.create(Fixture.Categories.scienceFiction());
+        action = categoryGateway.create(Fixture.Categories.action());
+
+        dystopian = genreGateway.create(Fixture.Genres.dystopian());
+
+        jenniferLawrence = castMemberGateway.create(Fixture.CastMembers.jenniferLawrence());
+        kayaScodelario = castMemberGateway.create(Fixture.CastMembers.kayaScodelario());
+        emmaWatson = castMemberGateway.create(Fixture.CastMembers.emmaWatson());
+    }
 
     @Test
     @Transactional
     void givenAValidVideo_whenCallsCreate_thenPersistIt() {
-        final var categories = categoryGateway.create(Fixture.Categories.scienceFiction());
-        final var genres = genreGateway.create(Fixture.Genres.dystopian());
-        final var members = castMemberGateway.create(Fixture.CastMembers.jenniferLawrence());
         final var expectedTitle = Fixture.Videos.title();
         final var expectedDescription = Fixture.Videos.description();
         final var expectedLaunchYear = Fixture.year();
@@ -52,9 +73,9 @@ class DefaultVideoGatewayTest {
         final var expectedRating = Fixture.Videos.rating();
         final var expectedOpened = Fixture.bool();
         final var expectedPublished = Fixture.bool();
-        final var expectedCategories = Set.of(categories.getId());
-        final var expectedGenres = Set.of(genres.getId());
-        final var expectedMembers = Set.of(members.getId());
+        final var expectedCategories = Set.of(scienceFiction.getId());
+        final var expectedGenres = Set.of(dystopian.getId());
+        final var expectedMembers = Set.of(jenniferLawrence.getId());
         final AudioVideoMedia expectedVideo = AudioVideoMedia.with("123", "video", "/media/video");
         final AudioVideoMedia expectedTrailer = AudioVideoMedia.with("123", "trailer", "/media/trailer");
         final ImageMedia expectedBanner = ImageMedia.with("123", "banner", "/media/banner");
@@ -197,9 +218,6 @@ class DefaultVideoGatewayTest {
                 Set.of(),
                 Set.of()
         ));
-        final var categories = categoryGateway.create(Fixture.Categories.scienceFiction());
-        final var genres = genreGateway.create(Fixture.Genres.dystopian());
-        final var members = castMemberGateway.create(Fixture.CastMembers.jenniferLawrence());
         final var expectedTitle = Fixture.Videos.title();
         final var expectedDescription = Fixture.Videos.description();
         final var expectedLaunchYear = Fixture.year();
@@ -207,9 +225,9 @@ class DefaultVideoGatewayTest {
         final var expectedRating = Fixture.Videos.rating();
         final var expectedOpened = Fixture.bool();
         final var expectedPublished = Fixture.bool();
-        final var expectedCategories = Set.of(categories.getId());
-        final var expectedGenres = Set.of(genres.getId());
-        final var expectedMembers = Set.of(members.getId());
+        final var expectedCategories = Set.of(scienceFiction.getId());
+        final var expectedGenres = Set.of(dystopian.getId());
+        final var expectedMembers = Set.of(jenniferLawrence.getId());
         final AudioVideoMedia expectedVideo = AudioVideoMedia.with("123", "video", "/media/video");
         final AudioVideoMedia expectedTrailer = AudioVideoMedia.with("123", "trailer", "/media/trailer");
         final ImageMedia expectedBanner = ImageMedia.with("123", "banner", "/media/banner");
@@ -302,9 +320,6 @@ class DefaultVideoGatewayTest {
 
     @Test
     void givenAValidVideo_whenCallsFindById_thenReturnIt() {
-        final var categories = categoryGateway.create(Fixture.Categories.scienceFiction());
-        final var genres = genreGateway.create(Fixture.Genres.dystopian());
-        final var members = castMemberGateway.create(Fixture.CastMembers.jenniferLawrence());
         final var expectedTitle = Fixture.Videos.title();
         final var expectedDescription = Fixture.Videos.description();
         final var expectedLaunchYear = Fixture.year();
@@ -312,9 +327,9 @@ class DefaultVideoGatewayTest {
         final var expectedRating = Fixture.Videos.rating();
         final var expectedOpened = Fixture.bool();
         final var expectedPublished = Fixture.bool();
-        final var expectedCategories = Set.of(categories.getId());
-        final var expectedGenres = Set.of(genres.getId());
-        final var expectedMembers = Set.of(members.getId());
+        final var expectedCategories = Set.of(scienceFiction.getId());
+        final var expectedGenres = Set.of(dystopian.getId());
+        final var expectedMembers = Set.of(jenniferLawrence.getId());
         final AudioVideoMedia expectedVideo = AudioVideoMedia.with("123", "video", "/media/video");
         final AudioVideoMedia expectedTrailer = AudioVideoMedia.with("123", "trailer", "/media/trailer");
         final ImageMedia expectedBanner = ImageMedia.with("123", "banner", "/media/banner");
@@ -365,5 +380,250 @@ class DefaultVideoGatewayTest {
         final var result = videoGateway.findById(VideoID.unique());
 
         Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void givenEmptyParams_whenCallFindAll_theReturnAllList() {
+        mockVideos();
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "";
+        final var expectedSort = "title";
+        final var expectedDirection = "asc";
+        final var expectedTotal = 4;
+
+        final var query = new VideoSearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection,
+                Set.of(),
+                Set.of(),
+                Set.of()
+        );
+
+        final var result = videoGateway.findAll(query);
+
+        Assertions.assertEquals(expectedPage, result.currentPage());
+        Assertions.assertEquals(expectedPerPage, result.perPage());
+        Assertions.assertEquals(expectedTotal, result.total());
+        Assertions.assertEquals(expectedTotal, result.items().size());
+    }
+
+    @Test
+    void givenEmptyVideos_whenCallFindAll_thenReturnEmptyList() {
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "";
+        final var expectedSort = "title";
+        final var expectedDirection = "asc";
+        final var expectedTotal = 0;
+
+        final var query = new VideoSearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection,
+                Set.of(),
+                Set.of(),
+                Set.of()
+        );
+
+        final var result = videoGateway.findAll(query);
+
+        Assertions.assertEquals(expectedPage, result.currentPage());
+        Assertions.assertEquals(expectedPerPage, result.perPage());
+        Assertions.assertEquals(expectedTotal, result.total());
+        Assertions.assertEquals(expectedTotal, result.items().size());
+    }
+
+    @Test
+    void givenAValidCategory_whenCallFindAll_thenReturnFilteredList() {
+        mockVideos();
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "";
+        final var expectedSort = "title";
+        final var expectedDirection = "asc";
+        final var expectedTotal = 2;
+
+        final var query = new VideoSearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection,
+                Set.of(action.getId()),
+                Set.of(),
+                Set.of()
+        );
+
+        final var result = videoGateway.findAll(query);
+
+        Assertions.assertEquals(expectedPage, result.currentPage());
+        Assertions.assertEquals(expectedPerPage, result.perPage());
+        Assertions.assertEquals(expectedTotal, result.total());
+        Assertions.assertEquals(expectedTotal, result.items().size());
+        Assertions.assertEquals(Fixture.Videos.hungerGames(), result.items().get(0).title());
+        Assertions.assertEquals(Fixture.Videos.mazzeRunner(), result.items().get(1).title());
+    }
+
+    @Test
+    void givenAValidCastMember_whenCallFindAll_thenReturnFilteredList() {
+        mockVideos();
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "";
+        final var expectedSort = "title";
+        final var expectedDirection = "asc";
+        final var expectedTotal = 1;
+
+        final var query = new VideoSearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection,
+                Set.of(),
+                Set.of(),
+                Set.of(emmaWatson.getId())
+        );
+
+        final var result = videoGateway.findAll(query);
+
+        Assertions.assertEquals(expectedPage, result.currentPage());
+        Assertions.assertEquals(expectedPerPage, result.perPage());
+        Assertions.assertEquals(expectedTotal, result.total());
+        Assertions.assertEquals(expectedTotal, result.items().size());
+        Assertions.assertEquals(Fixture.Videos.harryPotter(), result.items().get(0).title());
+    }
+
+    @Test
+    void givenAValidGenre_whenCallFindAll_thenReturnFilteredList() {
+        mockVideos();
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "";
+        final var expectedSort = "title";
+        final var expectedDirection = "asc";
+        final var expectedTotal = 3;
+
+        final var query = new VideoSearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection,
+                Set.of(),
+                Set.of(dystopian.getId()),
+                Set.of()
+        );
+
+        final var result = videoGateway.findAll(query);
+
+        Assertions.assertEquals(expectedPage, result.currentPage());
+        Assertions.assertEquals(expectedPerPage, result.perPage());
+        Assertions.assertEquals(expectedTotal, result.total());
+        Assertions.assertEquals(expectedTotal, result.items().size());
+        Assertions.assertEquals(Fixture.Videos.harryPotter(), result.items().get(0).title());
+        Assertions.assertEquals(Fixture.Videos.hungerGames(), result.items().get(1).title());
+        Assertions.assertEquals(Fixture.Videos.mazzeRunner(), result.items().get(2).title());
+    }
+
+    @Test
+    void givenAllParameters_whenCallFindAll_thenReturnFilteredList() {
+        mockVideos();
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "";
+        final var expectedSort = "title";
+        final var expectedDirection = "asc";
+        final var expectedTotal = 1;
+
+        final var query = new VideoSearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection,
+                Set.of(scienceFiction.getId()),
+                Set.of(dystopian.getId()),
+                Set.of(emmaWatson.getId())
+        );
+
+        final var result = videoGateway.findAll(query);
+
+        Assertions.assertEquals(expectedPage, result.currentPage());
+        Assertions.assertEquals(expectedPerPage, result.perPage());
+        Assertions.assertEquals(expectedTotal, result.total());
+        Assertions.assertEquals(expectedTotal, result.items().size());
+        Assertions.assertEquals(Fixture.Videos.harryPotter(), result.items().get(0).title());
+    }
+
+    @Test
+    void givenAValidPaging_whenCallsFindAll_tehnReturnPaged() {
+
+    }
+
+    @Test
+    void givenAValidTerm_whenCallsFindAll_thenReturnFiltered() {}
+
+    @Test
+    void givenAValidSortAndDirection_whenCallsFindAll_thenReturnOrdered() {}
+
+    private void mockVideos() {
+        videoGateway.create(Video.newVideo(
+                Fixture.Videos.harryPotter(),
+                Fixture.Videos.description(),
+                Fixture.year(),
+                Fixture.Videos.duration(),
+                Fixture.Videos.rating(),
+                Fixture.bool(),
+                Fixture.bool(),
+                Set.of(scienceFiction.getId()),
+                Set.of(dystopian.getId()),
+                Set.of(emmaWatson.getId())
+        ));
+
+        videoGateway.create(Video.newVideo(
+                Fixture.Videos.hungerGames(),
+                Fixture.Videos.description(),
+                Fixture.year(),
+                Fixture.Videos.duration(),
+                Fixture.Videos.rating(),
+                Fixture.bool(),
+                Fixture.bool(),
+                Set.of(action.getId()),
+                Set.of(dystopian.getId()),
+                Set.of(jenniferLawrence.getId())
+        ));
+
+        videoGateway.create(Video.newVideo(
+                Fixture.Videos.mazzeRunner(),
+                Fixture.Videos.description(),
+                Fixture.year(),
+                Fixture.Videos.duration(),
+                Fixture.Videos.rating(),
+                Fixture.bool(),
+                Fixture.bool(),
+                Set.of(action.getId(), scienceFiction.getId()),
+                Set.of(dystopian.getId()),
+                Set.of(kayaScodelario.getId())
+        ));
+
+        videoGateway.create(Video.newVideo(
+                "Aula de empreendedorismo",
+                Fixture.Videos.description(),
+                Fixture.year(),
+                Fixture.Videos.duration(),
+                Fixture.Videos.rating(),
+                Fixture.bool(),
+                Fixture.bool(),
+                Set.of(),
+                Set.of(),
+                Set.of()
+        ));
     }
 }

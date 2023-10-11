@@ -57,6 +57,8 @@ public final class Fixture {
                 CastMember.newMember("Kaya Scodelario", CastMemberType.ACTOR);
         private static final CastMember JENNIFER_LAWRENCE =
                 CastMember.newMember("Jennifer Lawrence", CastMemberType.ACTOR);
+        private static final CastMember EMMA_WATSON =
+                CastMember.newMember("Emma Watson", CastMemberType.ACTOR);
 
         public static CastMemberType type() {
             return FAKER.options().option(CastMemberType.values());
@@ -69,6 +71,8 @@ public final class Fixture {
         public static CastMember kayaScodelario() {
             return CastMember.with(KAYA_SCODELARIO);
         }
+
+        public static CastMember emmaWatson() { return CastMember.with(EMMA_WATSON); }
     }
 
     public static final class Videos {
@@ -84,13 +88,16 @@ public final class Fixture {
                 Set.of(Genres.dystopian().getId()),
                 Set.of(CastMembers.jenniferLawrence().getId())
         );
+        private static final String HARRY_POTTER = "Harry Potter";
+        private static final String HUNGER_GAMES = "Hunger Games";
+        private static final String MAZE_RUNNER = "Maze Runner";
+
+        public static String harryPotter() { return HARRY_POTTER; }
+        public static String hungerGames() { return HUNGER_GAMES; }
+        public static String mazzeRunner() { return MAZE_RUNNER; }
 
         public static String title() {
-            return FAKER.options().option(
-                    "Harry Potter and the Sorcerer's Stone",
-                    "The Hunger Games",
-                    "The Maze Runner"
-            );
+            return FAKER.options().option(HARRY_POTTER, HUNGER_GAMES, MAZE_RUNNER);
         }
 
         public static String description() {
