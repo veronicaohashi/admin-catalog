@@ -7,7 +7,6 @@ import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.infraestructure.castmember.persistence.CastMemberJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.castmember.persistence.CastMemberRepository;
-import com.fullcycle.admin.catalog.infraestructure.genre.persistence.GenreJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.utils.SpecificationUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import static org.springframework.data.jpa.domain.Specification.where;
 
@@ -78,8 +78,12 @@ public class CastMemberMySQLGateway implements CastMemberGateway {
 
     @Override
     public List<CastMemberID> existsByIds(final Iterable<CastMemberID> ids) {
-        // TODO: implement method
-        return null;
+        final var castMemberIDS = StreamSupport.stream(ids.spliterator(), false)
+                .map(CastMemberID::getValue)
+                .toList();
+        return castMemberRepository.existsByIds(castMemberIDS).stream()
+                .map(CastMemberID::from)
+                .toList();
     }
 
     private Specification<CastMemberJpaEntity> assembleSpecification(final String terms) {

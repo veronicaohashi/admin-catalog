@@ -1,7 +1,7 @@
 package com.fullcycle.admin.catalog.infraestructure.castmember;
 
-import com.fullcycle.admin.catalog.domain.Fixture;
 import com.fullcycle.admin.catalog.MySQLGatewayTest;
+import com.fullcycle.admin.catalog.domain.Fixture;
 import com.fullcycle.admin.catalog.domain.castmember.CastMember;
 import com.fullcycle.admin.catalog.domain.castmember.CastMemberID;
 import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
@@ -231,6 +231,19 @@ class CastMemberMySQLGatewayTest {
             Assertions.assertEquals(expectedName, result.items().get(index).getName());
             index++;
         }
+    }
+
+    @Test
+    void givenTwoMembersAndOnePersisted_whenCallsExistsByIds_thenReturnPersistedID() {
+        final var member = CastMember.newMember("Member 1", Fixture.CastMembers.type());
+        final var expectedItems = 1;
+        final var expectedId = member.getId();
+        castMemberRepository.saveAndFlush(CastMemberJpaEntity.from(member));
+
+        final var result = castMemberMySQLGateway.existsByIds(List.of(CastMemberID.unique(), expectedId));
+
+        Assertions.assertEquals(expectedItems, result.size());
+        Assertions.assertEquals(expectedId.getValue(), result.get(0).getValue());
     }
 
     private void mockMembers() {
