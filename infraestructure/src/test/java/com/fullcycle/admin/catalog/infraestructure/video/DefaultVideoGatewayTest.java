@@ -16,6 +16,8 @@ import com.fullcycle.admin.catalog.infraestructure.video.persistence.VideoReposi
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -337,22 +339,22 @@ class DefaultVideoGatewayTest {
         final ImageMedia expectedThumbHalf = ImageMedia.with("123", "thumbHalf", "/media/thumbHalf");
 
         final var video = videoGateway.create(Video.newVideo(
-                        expectedTitle,
-                        expectedDescription,
-                        expectedLaunchYear,
-                        expectedDuration,
-                        expectedRating,
-                        expectedOpened,
-                        expectedPublished,
-                        expectedCategories,
-                        expectedGenres,
-                        expectedMembers
-                )
-                .setVideo(expectedVideo)
-                .setTrailer(expectedTrailer)
-                .setBanner(expectedBanner)
-                .setThumbnail(expectedThumb)
-                .setThumbnailHalf(expectedThumbHalf)
+                                expectedTitle,
+                                expectedDescription,
+                                expectedLaunchYear,
+                                expectedDuration,
+                                expectedRating,
+                                expectedOpened,
+                                expectedPublished,
+                                expectedCategories,
+                                expectedGenres,
+                                expectedMembers
+                        )
+                        .setVideo(expectedVideo)
+                        .setTrailer(expectedTrailer)
+                        .setBanner(expectedBanner)
+                        .setThumbnail(expectedThumb)
+                        .setThumbnailHalf(expectedThumbHalf)
         );
 
         final var result = videoGateway.findById(video.getId()).get();
@@ -562,16 +564,126 @@ class DefaultVideoGatewayTest {
         Assertions.assertEquals(Fixture.Videos.harryPotter(), result.items().get(0).title());
     }
 
-    @Test
-    void givenAValidPaging_whenCallsFindAll_tehnReturnPaged() {
+    @ParameterizedTest
+    @CsvSource({
+            "0,2,2,4,Aula de empreendedorismo;Harry Potter",
+            "1,2,2,4,Hunger Games;Maze Runner",
+    })
+    void givenAValidPaging_whenCallsFindAll_thenReturnPaged(
+            final int expectedPage,
+            final int expectedPerPage,
+            final int expectedItemsCount,
+            final long expectedTotal,
+            final String expectedVideos
+    ) {
+        mockVideos();
+        final var expectedTerms = "";
+        final var expectedSort = "title";
+        final var expectedDirection = "asc";
 
+        final var query = new VideoSearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection,
+                Set.of(),
+                Set.of(),
+                Set.of()
+        );
+
+        final var result = videoGateway.findAll(query);
+
+        Assertions.assertEquals(expectedPage, result.currentPage());
+        Assertions.assertEquals(expectedPerPage, result.perPage());
+        Assertions.assertEquals(expectedTotal, result.total());
+        Assertions.assertEquals(expectedItemsCount, result.items().size());
+
+        int index = 0;
+        for (final var expectedTitle : expectedVideos.split(";")) {
+            final var actualTitle = result.items().get(index).title();
+            Assertions.assertEquals(expectedTitle, actualTitle);
+            index++;
+        }
     }
 
-    @Test
-    void givenAValidTerm_whenCallsFindAll_thenReturnFiltered() {}
+    @ParameterizedTest
+    @CsvSource({
+            "aula,0,10,1,1,Aula de empreendedorismo",
+            "ha,0,10,1,1,Harry Potter",
+            "hu,0,10,1,1,Hunger Games",
+            "ma,0,10,1,1,Maze Runner",
+    })
+    void givenAValidTerm_whenCallsFindAll_thenReturnFiltered(
+            final String expectedTerms,
+            final int expectedPage,
+            final int expectedPerPage,
+            final int expectedItemsCount,
+            final long expectedTotal,
+            final String expectedVideo
+    ) {
+        mockVideos();
+        final var expectedSort = "title";
+        final var expectedDirection = "asc";
 
-    @Test
-    void givenAValidSortAndDirection_whenCallsFindAll_thenReturnOrdered() {}
+        final var query = new VideoSearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection,
+                Set.of(),
+                Set.of(),
+                Set.of()
+        );
+
+        final var result = videoGateway.findAll(query);
+
+        Assertions.assertEquals(expectedPage, result.currentPage());
+        Assertions.assertEquals(expectedPerPage, result.perPage());
+        Assertions.assertEquals(expectedTotal, result.total());
+        Assertions.assertEquals(expectedItemsCount, result.items().size());
+        Assertions.assertEquals(expectedVideo, result.items().get(0).title());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "title,asc,0,10,4,4,Aula de empreendedorismo",
+            "title,desc,0,10,4,4,Maze Runner",
+            "createdAt,asc,0,10,4,4,Harry Potter",
+            "createdAt,desc,0,10,4,4,Aula de empreendedorismo",
+    })
+    void givenAValidSortAndDirection_whenCallsFindAll_thenReturnOrdered(
+            final String expectedSort,
+            final String expectedDirection,
+            final int expectedPage,
+            final int expectedPerPage,
+            final int expectedItemsCount,
+            final long expectedTotal,
+            final String expectedVideo
+    ) {
+        mockVideos();
+        final var expectedTerms = "";
+
+        final var query = new VideoSearchQuery(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection,
+                Set.of(),
+                Set.of(),
+                Set.of()
+        );
+
+        final var result = videoGateway.findAll(query);
+
+        Assertions.assertEquals(expectedPage, result.currentPage());
+        Assertions.assertEquals(expectedPerPage, result.perPage());
+        Assertions.assertEquals(expectedTotal, result.total());
+        Assertions.assertEquals(expectedItemsCount, result.items().size());
+        Assertions.assertEquals(expectedVideo, result.items().get(0).title());
+    }
 
     private void mockVideos() {
         videoGateway.create(Video.newVideo(
