@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.fullcycle.admin.catalog.domain.video.VideoMediaType.*;
+
 public class DefaultUpdateVideoUseCase extends UpdateVideoUseCase {
     private final VideoGateway videoGateway;
     private final CategoryGateway categoryGateway;
@@ -87,23 +89,23 @@ public class DefaultUpdateVideoUseCase extends UpdateVideoUseCase {
 
         try {
             final var videoMedia = command.getVideo()
-                    .map(it -> mediaResourceGateway.storeAudioVideo(id, it))
+                    .map(it -> mediaResourceGateway.storeAudioVideo(id, VideoResource.with(it, VIDEO)))
                     .orElse(null);
 
             final var trailerMedia = command.getTrailer()
-                    .map(it -> mediaResourceGateway.storeAudioVideo(id, it))
+                    .map(it -> mediaResourceGateway.storeAudioVideo(id, VideoResource.with(it, TRAILER)))
                     .orElse(null);
 
             final var bannerMedia = command.getBanner()
-                    .map(it -> mediaResourceGateway.storeImage(id, it))
+                    .map(it -> mediaResourceGateway.storeImage(id, VideoResource.with(it, BANNER)))
                     .orElse(null);
 
             final var thumbnailMedia = command.getThumbnail()
-                    .map(it -> mediaResourceGateway.storeImage(id, it))
+                    .map(it -> mediaResourceGateway.storeImage(id, VideoResource.with(it, THUMBNAIL)))
                     .orElse(null);
 
             final var thumbnailHalfMedia = command.getThumbnailHalf()
-                    .map(it -> mediaResourceGateway.storeImage(id, it))
+                    .map(it -> mediaResourceGateway.storeImage(id, VideoResource.with(it, THUMBNAIL_HALF)))
                     .orElse(null);
 
             return videoGateway.update(

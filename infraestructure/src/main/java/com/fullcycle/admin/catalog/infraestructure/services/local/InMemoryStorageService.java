@@ -1,6 +1,6 @@
 package com.fullcycle.admin.catalog.infraestructure.services.local;
 
-import com.fullcycle.admin.catalog.domain.video.Resource;
+import com.fullcycle.admin.catalog.domain.resource.Resource;
 import com.fullcycle.admin.catalog.infraestructure.services.StorageService;
 
 import java.util.List;

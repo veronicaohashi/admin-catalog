@@ -44,11 +44,11 @@ class GetVideoByIdUseCaseTest extends UseCaseTest {
                 Fixture.CastMembers.jenniferLawrence().getId(),
                 Fixture.CastMembers.kayaScodelario().getId()
         );
-        final AudioVideoMedia expectedVideo = Fixture.Videos.audioVideo(Resource.Type.VIDEO);
-        final AudioVideoMedia expectedTrailer = Fixture.Videos.audioVideo(Resource.Type.TRAILER);
-        final ImageMedia expectedBanner = Fixture.Videos.image(Resource.Type.BANNER);
-        final ImageMedia expectedThumb = Fixture.Videos.image(Resource.Type.THUMBNAIL);
-        final ImageMedia expectedThumbHalf = Fixture.Videos.image(Resource.Type.THUMBNAIL_HALF);
+        final AudioVideoMedia expectedVideo = Fixture.Videos.audioVideo();
+        final AudioVideoMedia expectedTrailer = Fixture.Videos.audioTrailer();
+        final ImageMedia expectedBanner = Fixture.Videos.imageBanner();
+        final ImageMedia expectedThumb = Fixture.Videos.imageThumbnail();
+        final ImageMedia expectedThumbHalf = Fixture.Videos.imageThumbnailHalf();
         final var video = Video.newVideo(
                         expectedTitle,
                         expectedDescription,

@@ -12,10 +12,7 @@ import com.fullcycle.admin.catalog.domain.genre.GenreID;
 import com.fullcycle.admin.catalog.domain.validation.Error;
 import com.fullcycle.admin.catalog.domain.validation.ValidationHandler;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
-import com.fullcycle.admin.catalog.domain.video.MediaResourceGateway;
-import com.fullcycle.admin.catalog.domain.video.Rating;
-import com.fullcycle.admin.catalog.domain.video.Video;
-import com.fullcycle.admin.catalog.domain.video.VideoGateway;
+import com.fullcycle.admin.catalog.domain.video.*;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -24,6 +21,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.fullcycle.admin.catalog.domain.video.VideoMediaType.*;
 
 public class DefaultCreateVideoUseCase extends CreateVideoUseCase {
 
@@ -98,23 +97,23 @@ public class DefaultCreateVideoUseCase extends CreateVideoUseCase {
 
         try {
             final var videoMedia = command.getVideo()
-                    .map(it -> mediaResourceGateway.storeAudioVideo(id, it))
+                    .map(it -> mediaResourceGateway.storeAudioVideo(id, VideoResource.with(it, VIDEO)))
                     .orElse(null);
 
             final var trailerMedia = command.getTrailer()
-                    .map(it -> mediaResourceGateway.storeAudioVideo(id, it))
+                    .map(it -> mediaResourceGateway.storeAudioVideo(id, VideoResource.with(it, TRAILER)))
                     .orElse(null);
 
             final var bannerMedia = command.getBanner()
-                    .map(it -> mediaResourceGateway.storeImage(id, it))
+                    .map(it -> mediaResourceGateway.storeImage(id, VideoResource.with(it, BANNER)))
                     .orElse(null);
 
             final var thumbnailMedia = command.getThumbnail()
-                    .map(it -> mediaResourceGateway.storeImage(id, it))
+                    .map(it -> mediaResourceGateway.storeImage(id, VideoResource.with(it, THUMBNAIL)))
                     .orElse(null);
 
             final var thumbnailHalfMedia = command.getThumbnailHalf()
-                    .map(it -> mediaResourceGateway.storeImage(id, it))
+                    .map(it -> mediaResourceGateway.storeImage(id, VideoResource.with(it, THUMBNAIL_HALF)))
                     .orElse(null);
 
             return videoGateway.create(

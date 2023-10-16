@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalog.infraestructure.services.impl;
 
-import com.fullcycle.admin.catalog.domain.video.Resource;
+import com.fullcycle.admin.catalog.domain.resource.Resource;
+import com.fullcycle.admin.catalog.domain.utils.IdUtils;
 import com.fullcycle.admin.catalog.infraestructure.services.StorageService;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
@@ -23,7 +24,7 @@ public class GCStorageService implements StorageService {
     public void store(final String id, final Resource resource) {
         final var blob = BlobInfo.newBuilder(bucket, id)
                 .setContentType(resource.contentType())
-                .setCrc32cFromHexString("")
+                .setCrc32cFromHexString(resource.checksum())
                 .build();
         storage.create(blob, resource.content());
     }
@@ -32,10 +33,10 @@ public class GCStorageService implements StorageService {
     public Resource get(final String id) {
         final var blob = storage.get(bucket, id);
         return Resource.with(
+                blob.getCrc32cToHexString(),
                 blob.getContent(),
                 blob.getContentType(),
-                blob.getName(),
-                null
+                blob.getName()
         );
     }
 
