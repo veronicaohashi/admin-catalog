@@ -5,13 +5,13 @@ import com.fullcycle.admin.catalog.infraestructure.services.StorageService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryStorageService implements StorageService {
     private final Map<String, Resource> storage;
 
-    public InMemoryStorageService(final Map<String, Resource> storage) {
-        this.storage = Objects.requireNonNull(storage);
+    public InMemoryStorageService() {
+        this.storage = new ConcurrentHashMap<>();
     }
 
     public void clean() {
