@@ -3,6 +3,7 @@ package com.fullcycle.admin.catalog.domain.resource;
 import com.fullcycle.admin.catalog.domain.ValueObject;
 import com.fullcycle.admin.catalog.domain.video.VideoMediaType;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Resource extends ValueObject {
@@ -21,7 +22,7 @@ public class Resource extends ValueObject {
         return new Resource(checksum, content, contentType, name);
     }
 
-    public String checksum() { return contentType; }
+    public String checksum() { return checksum; }
     public byte[] content() {
         return content;
     }
@@ -32,4 +33,18 @@ public class Resource extends ValueObject {
         return name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Resource resource = (Resource) o;
+        return Objects.equals(checksum, resource.checksum) && Arrays.equals(content, resource.content) && Objects.equals(contentType, resource.contentType) && Objects.equals(name, resource.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(checksum, contentType, name);
+        result = 31 * result + Arrays.hashCode(content);
+        return result;
+    }
 }
