@@ -1,17 +1,23 @@
 package com.fullcycle.admin.catalog.infraestructure.configuration.storage;
 
 import com.fullcycle.admin.catalog.infraestructure.configuration.properties.GoogleStorageProperties;
+import com.fullcycle.admin.catalog.infraestructure.configuration.properties.storage.StorageProperties;
 import com.fullcycle.admin.catalog.infraestructure.services.StorageService;
 import com.fullcycle.admin.catalog.infraestructure.services.impl.GCStorageService;
 import com.fullcycle.admin.catalog.infraestructure.services.local.InMemoryStorageService;
 import com.google.cloud.storage.Storage;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class StorageConfig {
+
+    @Bean
+    @ConfigurationProperties(value = "storage.admin-videos")
+    public StorageProperties storageProperties() { return new StorageProperties(); }
 
     @Bean("storageService")
     @Profile({"development", "production"})

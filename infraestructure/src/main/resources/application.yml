@@ -51,3 +51,8 @@ logging:
   level:
     ROOT: INFO
     com.fullcycle.admin.catalog: DEBUG
+
+storage:
+  admin-videos:
+    filename-pattern: type-{type}
+    location-pattern: videoId-{videoId}
