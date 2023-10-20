@@ -19,11 +19,14 @@ public class DefaultGetMediaUseCase extends GetMediaUseCase {
     @Override
     public MediaOutput execute(final GetMediaCommand command) {
         final var videoID = VideoID.from(command.videoId());
-        final var type = VideoMediaType.valueOf(command.mediaType());
+        final var type = VideoMediaType.of(command.mediaType())
+                .orElseThrow(() -> NotFoundException.with(
+                        new Error("Media type %s doesn't exist".formatted(command.mediaType()))
+                ));
 
         final var resource = mediaResourceGateway.getResource(videoID, type)
                 .orElseThrow(() -> NotFoundException.with(
-                        new Error("Media type %s for id %s doesn't exists".formatted(type, videoID.getValue()))
+                        new Error("Resource %s not found for video %s".formatted(type, videoID.getValue()))
                 ));
 
         return MediaOutput.from(resource);
