@@ -15,6 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static com.fullcycle.admin.catalog.domain.Fixture.Videos.videoResource;
+import static com.fullcycle.admin.catalog.domain.video.VideoMediaType.BANNER;
+import static com.fullcycle.admin.catalog.domain.video.VideoMediaType.VIDEO;
+
 @IntegrationTest
 class DefaultMediaResourceGatewayTest {
     @Autowired
@@ -31,8 +35,8 @@ class DefaultMediaResourceGatewayTest {
     @Test
     void givenValidResource_whenCallsStorageAudioVideo_shouldStoreIt() {
         final var expectedVideoId = VideoID.unique();
-        final var expectedResource = Fixture.Videos.videoResource();
-        final var expectedType = VideoMediaType.VIDEO;
+        final var expectedResource = videoResource();
+        final var expectedType = VIDEO;
         final var expectedStatus = MediaStatus.PENDING;
         final var expectedLocation = "videoId-%s/type-%s".formatted(expectedVideoId.getValue(), expectedType.name());
         final var expectedVideoResource = VideoResource.with(expectedResource, expectedType);
@@ -56,7 +60,7 @@ class DefaultMediaResourceGatewayTest {
     void givenValidResource_whenCallsStorageImage_shouldStoreIt() {
         final var expectedVideoId = VideoID.unique();
         final var expectedResource = Fixture.Videos.bannerResource();
-        final var expectedType = VideoMediaType.BANNER;
+        final var expectedType = BANNER;
         final var expectedLocation = "videoId-%s/type-%s".formatted(expectedVideoId.getValue(), expectedType.name());
         final var expectedVideoResource = VideoResource.with(expectedResource, expectedType);
 
@@ -79,17 +83,17 @@ class DefaultMediaResourceGatewayTest {
         final var secondVideoId = VideoID.unique();
 
         final var toBeDeleted = List.of(
-                "videoId-%s/type-%s".formatted(firstVideoId.getValue(), VideoMediaType.VIDEO.name()),
+                "videoId-%s/type-%s".formatted(firstVideoId.getValue(), VIDEO.name()),
                 "videoId-%s/type-%s".formatted(firstVideoId.getValue(), VideoMediaType.TRAILER.name()),
-                "videoId-%s/type-%s".formatted(firstVideoId.getValue(), VideoMediaType.BANNER.name())
+                "videoId-%s/type-%s".formatted(firstVideoId.getValue(), BANNER.name())
         );
 
         final var toNotBeDeleted = List.of(
-                "videoId-%s/type-%s".formatted(secondVideoId.getValue(), VideoMediaType.BANNER.name()),
+                "videoId-%s/type-%s".formatted(secondVideoId.getValue(), BANNER.name()),
                 "videoId-%s/type-%s".formatted(secondVideoId.getValue(), VideoMediaType.THUMBNAIL.name())
         );
 
-        toBeDeleted.forEach(it -> storageService().store(it, Fixture.Videos.videoResource()));
+        toBeDeleted.forEach(it -> storageService().store(it, videoResource()));
         toNotBeDeleted.forEach(it -> storageService().store(it, Fixture.Videos.bannerResource()));
 
         Assertions.assertEquals(5, storageService().storage().size());
@@ -98,6 +102,31 @@ class DefaultMediaResourceGatewayTest {
 
         Assertions.assertEquals(2, storageService().storage().size());
         Assertions.assertTrue(storageService().storage().keySet().containsAll(toNotBeDeleted));
+    }
+
+    @Test
+    void givenValidVideoId_whenCallsGetResource_thenReturnIt() {
+        final var expectedId = VideoID.unique();
+        final var expectedType = VIDEO;
+        final var expectedResource = videoResource();
+        storageService().store("videoId-%s/type-%s".formatted(expectedId.getValue(), expectedType), expectedResource);
+        storageService().store("videoId-%s/type-%s".formatted(VideoID.unique(), expectedType), videoResource());
+
+        final var result = defaultMediaResourceGateway.getResource(expectedId, expectedType).get();
+
+        Assertions.assertEquals(expectedResource, result);
+    }
+
+    @Test
+    void givenInvalidType_whenCallsGetResource_thenReturnEmpty() {
+        final var expectedId = VideoID.unique();
+        final var expectedType = VIDEO;
+        final var expectedResource = videoResource();
+        storageService().store("videoId-%s/type-%s".formatted(expectedId.getValue(), expectedType), expectedResource);
+
+        final var result = defaultMediaResourceGateway.getResource(expectedId, BANNER);
+
+        Assertions.assertTrue(result.isEmpty());
     }
 
     private InMemoryStorageService storageService() {
