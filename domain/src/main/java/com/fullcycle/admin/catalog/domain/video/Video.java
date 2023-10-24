@@ -208,6 +208,30 @@ public class Video extends AggregateRoot<VideoID> {
         return this;
     }
 
+    public Video processing(final VideoMediaType type) {
+        if (VideoMediaType.VIDEO == type) {
+            getVideo()
+                    .ifPresent(media -> setVideo(media.processing()));
+        } else if (VideoMediaType.TRAILER == type) {
+            getTrailer()
+                    .ifPresent(media -> setTrailer(media.processing()));
+        }
+
+        return this;
+    }
+
+    public Video completed(final VideoMediaType type, final String encodedPath) {
+        if (VideoMediaType.VIDEO == type) {
+            getVideo()
+                    .ifPresent(media -> setVideo(media.completed(encodedPath)));
+        } else if (VideoMediaType.TRAILER == type) {
+            getTrailer()
+                    .ifPresent(media -> setTrailer(media.completed(encodedPath)));
+        }
+
+        return this;
+    }
+
     public String getTitle() {
         return title;
     }

@@ -48,6 +48,28 @@ public class AudioVideoMedia extends ValueObject {
         return new AudioVideoMedia(IdUtils.uuid(), checksum, name, rawLocation, "", MediaStatus.PENDING);
     }
 
+    public AudioVideoMedia processing() {
+        return AudioVideoMedia.with(
+                id(),
+                checksum(),
+                name(),
+                rawLocation(),
+                encodedPath(),
+                MediaStatus.PROCESSING
+        );
+    }
+
+    public AudioVideoMedia completed(final String encodedPath) {
+        return AudioVideoMedia.with(
+                id(),
+                checksum(),
+                name(),
+                rawLocation(),
+                encodedPath,
+                MediaStatus.COMPLETED
+        );
+    }
+
     public String id() {
         return id;
     }
