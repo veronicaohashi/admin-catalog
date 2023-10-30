@@ -4,6 +4,8 @@ import com.fullcycle.admin.catalog.domain.Identifier;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.utils.CollectionUtils;
 import com.fullcycle.admin.catalog.domain.video.*;
+import com.fullcycle.admin.catalog.infraestructure.configuration.annotations.VideoCreatedQueue;
+import com.fullcycle.admin.catalog.infraestructure.services.EventService;
 import com.fullcycle.admin.catalog.infraestructure.utils.SqlUtils;
 import com.fullcycle.admin.catalog.infraestructure.video.persistence.VideoJpaEntity;
 import com.fullcycle.admin.catalog.infraestructure.video.persistence.VideoRepository;
@@ -23,9 +25,13 @@ import static com.fullcycle.admin.catalog.domain.utils.CollectionUtils.nullIfEmp
 @Component
 public class DefaultVideoGateway implements VideoGateway {
 
+    private final EventService eventService;
     private final VideoRepository videoRepository;
 
-    public DefaultVideoGateway(final VideoRepository videoRepository) {
+    public DefaultVideoGateway(
+            @VideoCreatedQueue final EventService eventService,
+            final VideoRepository videoRepository) {
+        this.eventService = Objects.requireNonNull(eventService);
         this.videoRepository = Objects.requireNonNull(videoRepository);
     }
 
@@ -81,7 +87,12 @@ public class DefaultVideoGateway implements VideoGateway {
     }
 
     private Video save(final Video video) {
-        return videoRepository.save(VideoJpaEntity.from(video))
+        final var result =  videoRepository.save(VideoJpaEntity.from(video))
                 .toAggregate();
+
+
+        video.publishDomainEvents(eventService::send);
+
+        return result;
     }
 }
