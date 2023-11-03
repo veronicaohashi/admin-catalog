@@ -96,11 +96,11 @@ class DefaultVideoGatewayTest {
                         expectedGenres,
                         expectedMembers
                 )
-                .setVideo(expectedVideo)
-                .setTrailer(expectedTrailer)
-                .setBanner(expectedBanner)
-                .setThumbnail(expectedThumb)
-                .setThumbnailHalf(expectedThumbHalf);
+                .updateVideo(expectedVideo)
+                .updateTrailer(expectedTrailer)
+                .updateBanner(expectedBanner)
+                .updateThumbnail(expectedThumb)
+                .updateThumbnailHalf(expectedThumbHalf);
 
         final var result = videoGateway.create(video);
 
@@ -248,11 +248,11 @@ class DefaultVideoGatewayTest {
                         expectedGenres,
                         expectedMembers
                 )
-                .setVideo(expectedVideo)
-                .setTrailer(expectedTrailer)
-                .setBanner(expectedBanner)
-                .setThumbnail(expectedThumb)
-                .setThumbnailHalf(expectedThumbHalf);
+                .updateVideo(expectedVideo)
+                .updateTrailer(expectedTrailer)
+                .updateBanner(expectedBanner)
+                .updateThumbnail(expectedThumb)
+                .updateThumbnailHalf(expectedThumbHalf);
 
         final var result = videoGateway.update(updatedVideo);
         Assertions.assertNotNull(result.getId());
@@ -350,11 +350,11 @@ class DefaultVideoGatewayTest {
                                 expectedGenres,
                                 expectedMembers
                         )
-                        .setVideo(expectedVideo)
-                        .setTrailer(expectedTrailer)
-                        .setBanner(expectedBanner)
-                        .setThumbnail(expectedThumb)
-                        .setThumbnailHalf(expectedThumbHalf)
+                        .updateVideo(expectedVideo)
+                        .updateTrailer(expectedTrailer)
+                        .updateBanner(expectedBanner)
+                        .updateThumbnail(expectedThumb)
+                        .updateThumbnailHalf(expectedThumbHalf)
         );
 
         final var result = videoGateway.findById(video.getId()).get();

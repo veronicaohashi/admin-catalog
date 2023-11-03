@@ -154,7 +154,7 @@ class VideoTest {
                 Collections.emptySet()
         );
 
-        final var updatedVideo = Video.with(video).setVideo(expectedVideo);
+        final var updatedVideo = Video.with(video).updateVideo(expectedVideo);
 
         Assertions.assertEquals(expectedVideo, updatedVideo.getVideo().get());
         Assertions.assertTrue(updatedVideo.getUpdatedAt().isAfter(video.getUpdatedAt()));
@@ -181,7 +181,7 @@ class VideoTest {
                 Collections.emptySet()
         );
 
-        final var updatedVideo = Video.with(video).setTrailer(expectedTrailer);
+        final var updatedVideo = Video.with(video).updateTrailer(expectedTrailer);
 
         Assertions.assertEquals(expectedTrailer, updatedVideo.getTrailer().get());
         Assertions.assertTrue(updatedVideo.getUpdatedAt().isAfter(video.getUpdatedAt()));
@@ -208,7 +208,7 @@ class VideoTest {
                 Collections.emptySet()
         );
 
-        final var updatedVideo = Video.with(video).setBanner(expectedBanner);
+        final var updatedVideo = Video.with(video).updateBanner(expectedBanner);
 
         Assertions.assertEquals(expectedBanner, updatedVideo.getBanner().get());
         Assertions.assertTrue(updatedVideo.getUpdatedAt().isAfter(video.getUpdatedAt()));
@@ -235,7 +235,7 @@ class VideoTest {
                 Collections.emptySet()
         );
 
-        final var updatedVideo = Video.with(video).setThumbnail(expectedThumbnail);
+        final var updatedVideo = Video.with(video).updateThumbnail(expectedThumbnail);
 
         Assertions.assertEquals(expectedThumbnail, updatedVideo.getThumbnail().get());
         Assertions.assertTrue(updatedVideo.getUpdatedAt().isAfter(video.getUpdatedAt()));
@@ -262,7 +262,7 @@ class VideoTest {
                 Collections.emptySet()
         );
 
-        final var updatedVideo = Video.with(video).setThumbnailHalf(expectedThumbnailHalf);
+        final var updatedVideo = Video.with(video).updateThumbnailHalf(expectedThumbnailHalf);
 
         Assertions.assertEquals(expectedThumbnailHalf, updatedVideo.getThumbnailHalf().get());
         Assertions.assertTrue(updatedVideo.getUpdatedAt().isAfter(video.getUpdatedAt()));

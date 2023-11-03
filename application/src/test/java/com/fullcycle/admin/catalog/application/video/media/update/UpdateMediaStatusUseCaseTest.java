@@ -37,7 +37,7 @@ class UpdateMediaStatusUseCaseTest extends UseCaseTest {
         final var expectedFilename = "filename.mp4";
         final var expectedMedia = Fixture.Videos.audioVideo();
 
-        final var video = Fixture.Videos.systemDesign().setVideo(expectedMedia);
+        final var video = Fixture.Videos.systemDesign().updateVideo(expectedMedia);
         final var expectedVideoId = video.getId();
         final var command = UpdateMediaStatusCommand.with(
                 expectedVideoId.getValue(),
@@ -72,7 +72,7 @@ class UpdateMediaStatusUseCaseTest extends UseCaseTest {
     void givenCommandForVideo_whenIsValidForProcessing_thenUpdateStatusAndEncodedLocation() {
         final var expectedStatus = MediaStatus.PROCESSING;
         final var expectedMedia = Fixture.Videos.audioVideo();
-        final var video = Fixture.Videos.systemDesign().setVideo(expectedMedia);
+        final var video = Fixture.Videos.systemDesign().updateVideo(expectedMedia);
         final var expectedVideoId = video.getId();
         final var command = UpdateMediaStatusCommand.with(
                 expectedVideoId.getValue(),
@@ -109,7 +109,7 @@ class UpdateMediaStatusUseCaseTest extends UseCaseTest {
         final var expectedFolder = "encoded_media";
         final var expectedFilename = "filename.mp4";
         final var expectedMedia = Fixture.Videos.audioTrailer();
-        final var video = Fixture.Videos.systemDesign().setTrailer(expectedMedia);
+        final var video = Fixture.Videos.systemDesign().updateTrailer(expectedMedia);
         final var expectedVideoId = video.getId();
         final var command = UpdateMediaStatusCommand.with(
                 expectedVideoId.getValue(),
@@ -144,7 +144,7 @@ class UpdateMediaStatusUseCaseTest extends UseCaseTest {
     void givenCommandForTrailer_whenIsValidForProcessing_thenUpdateStatusAndEncodedLocation() {
         final var expectedStatus = MediaStatus.PROCESSING;
         final var expectedMedia = Fixture.Videos.audioTrailer();
-        final var video = Fixture.Videos.systemDesign().setTrailer(expectedMedia);
+        final var video = Fixture.Videos.systemDesign().updateTrailer(expectedMedia);
         final var expectedVideoId = video.getId();
         final var command = UpdateMediaStatusCommand.with(
                 expectedVideoId.getValue(),
@@ -180,7 +180,7 @@ class UpdateMediaStatusUseCaseTest extends UseCaseTest {
         final var expectedFolder = "encoded_media";
         final var expectedFilename = "filename.mp4";
         final var expectedMedia = Fixture.Videos.audioTrailer();
-        final var video = Fixture.Videos.systemDesign().setTrailer(expectedMedia);
+        final var video = Fixture.Videos.systemDesign().updateTrailer(expectedMedia);
         final var expectedVideoId = video.getId();
         final var command = UpdateMediaStatusCommand.with(
                 expectedVideoId.getValue(),

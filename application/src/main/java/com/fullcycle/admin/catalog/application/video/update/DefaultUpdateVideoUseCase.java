@@ -110,11 +110,11 @@ public class DefaultUpdateVideoUseCase extends UpdateVideoUseCase {
 
             return videoGateway.update(
                     video
-                            .setVideo(videoMedia)
-                            .setTrailer(trailerMedia)
-                            .setBanner(bannerMedia)
-                            .setThumbnail(thumbnailMedia)
-                            .setThumbnailHalf(thumbnailHalfMedia)
+                            .updateVideo(videoMedia)
+                            .updateTrailer(trailerMedia)
+                            .updateBanner(bannerMedia)
+                            .updateThumbnail(thumbnailMedia)
+                            .updateThumbnailHalf(thumbnailHalfMedia)
             );
         } catch (final Throwable t) {
             mediaResourceGateway.clearResource(id);

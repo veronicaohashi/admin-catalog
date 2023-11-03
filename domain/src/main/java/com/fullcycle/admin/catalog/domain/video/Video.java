@@ -217,10 +217,10 @@ public class Video extends AggregateRoot<VideoID> {
     public Video processing(final VideoMediaType type) {
         if (VideoMediaType.VIDEO == type) {
             getVideo()
-                    .ifPresent(media -> setVideo(media.processing()));
+                    .ifPresent(media -> updateVideo(media.processing()));
         } else if (VideoMediaType.TRAILER == type) {
             getTrailer()
-                    .ifPresent(media -> setTrailer(media.processing()));
+                    .ifPresent(media -> updateTrailer(media.processing()));
         }
 
         return this;
@@ -229,10 +229,10 @@ public class Video extends AggregateRoot<VideoID> {
     public Video completed(final VideoMediaType type, final String encodedPath) {
         if (VideoMediaType.VIDEO == type) {
             getVideo()
-                    .ifPresent(media -> setVideo(media.completed(encodedPath)));
+                    .ifPresent(media -> updateVideo(media.completed(encodedPath)));
         } else if (VideoMediaType.TRAILER == type) {
             getTrailer()
-                    .ifPresent(media -> setTrailer(media.completed(encodedPath)));
+                    .ifPresent(media -> updateTrailer(media.completed(encodedPath)));
         }
 
         return this;
@@ -306,31 +306,31 @@ public class Video extends AggregateRoot<VideoID> {
         return castMembers != null ? unmodifiableSet(castMembers) : emptySet();
     }
 
-    public Video setBanner(final ImageMedia banner) {
+    public Video updateBanner(final ImageMedia banner) {
         this.banner = banner;
         this.updatedAt = InstantUtils.now();
         return this;
     }
 
-    public Video setThumbnail(final ImageMedia thumbnail) {
+    public Video updateThumbnail(final ImageMedia thumbnail) {
         this.thumbnail = thumbnail;
         this.updatedAt = InstantUtils.now();
         return this;
     }
 
-    public Video setThumbnailHalf(final ImageMedia thumbnailHalf) {
+    public Video updateThumbnailHalf(final ImageMedia thumbnailHalf) {
         this.thumbnailHalf = thumbnailHalf;
         this.updatedAt = InstantUtils.now();
         return this;
     }
 
-    public Video setTrailer(final AudioVideoMedia trailer) {
+    public Video updateTrailer(final AudioVideoMedia trailer) {
         this.trailer = trailer;
         this.updatedAt = InstantUtils.now();
         return this;
     }
 
-    public Video setVideo(final AudioVideoMedia video) {
+    public Video updateVideo(final AudioVideoMedia video) {
         this.video = video;
         this.updatedAt = InstantUtils.now();
         return this;

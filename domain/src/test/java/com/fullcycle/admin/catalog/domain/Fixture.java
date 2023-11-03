@@ -46,11 +46,11 @@ public final class Fixture {
                                 CastMembers.kayaScodelario().getId()
                         )
                 )
-                .setVideo(Videos.audioVideo())
-                .setTrailer(Videos.audioTrailer())
-                .setBanner(Videos.imageBanner())
-                .setThumbnail(Videos.imageThumbnail())
-                .setThumbnailHalf(Videos.imageThumbnailHalf());
+                .updateVideo(Videos.audioVideo())
+                .updateTrailer(Videos.audioTrailer())
+                .updateBanner(Videos.imageBanner())
+                .updateThumbnail(Videos.imageThumbnail())
+                .updateThumbnailHalf(Videos.imageThumbnailHalf());
     }
 
     public static final class CastMembers {
@@ -176,11 +176,11 @@ public final class Fixture {
 
         public static Video systemDesign() {
             return Video.with(SYSTEM_DESIGN)
-                    .setVideo(Videos.audioVideo())
-                    .setTrailer(Videos.audioTrailer())
-                    .setBanner(Videos.imageBanner())
-                    .setThumbnail(Videos.imageThumbnail())
-                    .setThumbnailHalf(Videos.imageThumbnailHalf());
+                    .updateVideo(Videos.audioVideo())
+                    .updateTrailer(Videos.audioTrailer())
+                    .updateBanner(Videos.imageBanner())
+                    .updateThumbnail(Videos.imageThumbnail())
+                    .updateThumbnailHalf(Videos.imageThumbnailHalf());
         }
     }
 
