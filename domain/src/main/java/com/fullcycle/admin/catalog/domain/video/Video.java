@@ -327,13 +327,21 @@ public class Video extends AggregateRoot<VideoID> {
     public Video updateTrailer(final AudioVideoMedia trailer) {
         this.trailer = trailer;
         this.updatedAt = InstantUtils.now();
+        onAudioVideoMediaUpdated(trailer);
         return this;
     }
 
     public Video updateVideo(final AudioVideoMedia video) {
         this.video = video;
         this.updatedAt = InstantUtils.now();
+        onAudioVideoMediaUpdated(video);
         return this;
+    }
+
+    private void onAudioVideoMediaUpdated(final AudioVideoMedia media) {
+        if(media != null && media.isPendingEncode()) {
+            registerEvent(new VideoMediaCreated(getId().getValue(), media.rawLocation()));
+        }
     }
 
     private void setCategories(final Set<CategoryID> categories) {

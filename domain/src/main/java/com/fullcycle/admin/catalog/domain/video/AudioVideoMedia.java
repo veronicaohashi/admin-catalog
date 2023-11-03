@@ -5,6 +5,8 @@ import com.fullcycle.admin.catalog.domain.utils.IdUtils;
 
 import java.util.Objects;
 
+import static com.fullcycle.admin.catalog.domain.video.MediaStatus.PENDING;
+
 public class AudioVideoMedia extends ValueObject {
     private final String id;
     private final String checksum;
@@ -45,7 +47,7 @@ public class AudioVideoMedia extends ValueObject {
             final String name,
             final String rawLocation
     ) {
-        return new AudioVideoMedia(IdUtils.uuid(), checksum, name, rawLocation, "", MediaStatus.PENDING);
+        return new AudioVideoMedia(IdUtils.uuid(), checksum, name, rawLocation, "", PENDING);
     }
 
     public AudioVideoMedia processing() {
@@ -106,4 +108,6 @@ public class AudioVideoMedia extends ValueObject {
     public int hashCode() {
         return Objects.hash(checksum, rawLocation);
     }
+
+    public boolean isPendingEncode() { return status == PENDING; }
 }

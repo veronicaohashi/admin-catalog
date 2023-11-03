@@ -135,7 +135,7 @@ class VideoTest {
     }
 
     @Test
-    void givenValidVideo_whenCallsSetVideo_thenReturnUpdated() {
+    void givenValidVideo_whenCallsUpdateVideo_thenReturnUpdated() {
         final var expectedVideo = AudioVideoMedia.with(
                 "abc",
                 "Video.mp4",
@@ -159,10 +159,16 @@ class VideoTest {
         Assertions.assertEquals(expectedVideo, updatedVideo.getVideo().get());
         Assertions.assertTrue(updatedVideo.getUpdatedAt().isAfter(video.getUpdatedAt()));
         Assertions.assertDoesNotThrow(() -> updatedVideo.validate(new ThrowsValidationHandler()));
+        Assertions.assertEquals(1, updatedVideo.getDomainEvents().size());
+
+        final var event = (VideoMediaCreated) updatedVideo.getDomainEvents().get(0);
+        Assertions.assertEquals(video.getId().getValue(), event.resourceId());
+        Assertions.assertEquals(expectedVideo.rawLocation(), event.filepath());
+        Assertions.assertNotNull(event.occurredOn());
     }
 
     @Test
-    void givenValidVideo_whenCallsSetTrailer_thenReturnUpdated() {
+    void givenValidVideo_whenCallsUpdateTrailer_thenReturnUpdated() {
         final var expectedTrailer = AudioVideoMedia.with(
                 "abc",
                 "Trailer.mp4",
@@ -186,10 +192,16 @@ class VideoTest {
         Assertions.assertEquals(expectedTrailer, updatedVideo.getTrailer().get());
         Assertions.assertTrue(updatedVideo.getUpdatedAt().isAfter(video.getUpdatedAt()));
         Assertions.assertDoesNotThrow(() -> updatedVideo.validate(new ThrowsValidationHandler()));
+        Assertions.assertEquals(1, updatedVideo.getDomainEvents().size());
+
+        final var event = (VideoMediaCreated) updatedVideo.getDomainEvents().get(0);
+        Assertions.assertEquals(video.getId().getValue(), event.resourceId());
+        Assertions.assertEquals(expectedTrailer.rawLocation(), event.filepath());
+        Assertions.assertNotNull(event.occurredOn());
     }
 
     @Test
-    void givenValidVideo_whenCallsSetBanner_thenReturnUpdated() {
+    void givenValidVideo_whenCallsUpdateBanner_thenReturnUpdated() {
         final var expectedBanner = ImageMedia.with(
                 "abc",
                 "Banner.jpg",
@@ -216,7 +228,7 @@ class VideoTest {
     }
 
     @Test
-    void givenValidVideo_whenCallsSetThumbnail_thenReturnUpdated() {
+    void givenValidVideo_whenCallsUpdateThumbnail_thenReturnUpdated() {
         final var expectedThumbnail = ImageMedia.with(
                 "abc",
                 "Thumbnail.jpg",
@@ -243,7 +255,7 @@ class VideoTest {
     }
 
     @Test
-    void givenValidVideo_whenCallsSetThumbnailHalf_tehnReturnUpdated() {
+    void givenValidVideo_whenCallsUpdateThumbnailHalf_tehnReturnUpdated() {
         final var expectedThumbnailHalf = ImageMedia.with(
                 "abc",
                 "ThumbnailHalf.jpg",
